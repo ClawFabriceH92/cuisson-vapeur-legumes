@@ -4,7 +4,7 @@
     flat white silhouette on a transparent background (the system applies
     its own tint) — kept intentionally simple.
 -->
-<vector xmlns:android="http://schemas.android.com/apk/res/vector"
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
