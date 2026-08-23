@@ -2,14 +2,19 @@ package com.trucdecomptable.cuissonvapeur.ui.screens.catalogue
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
+import com.trucdecomptable.cuissonvapeur.alarm.CookingTimerService
 import com.trucdecomptable.cuissonvapeur.data.repository.CookingSessionRepository
 import com.trucdecomptable.cuissonvapeur.data.repository.VegetableRepository
 import com.trucdecomptable.cuissonvapeur.domain.model.ALL_YEAR
 import com.trucdecomptable.cuissonvapeur.domain.model.Season
 import com.trucdecomptable.cuissonvapeur.domain.model.Vegetable
+import com.trucdecomptable.cuissonvapeur.domain.plan.CookingPlan
+import com.trucdecomptable.cuissonvapeur.domain.plan.CookingPlanCalculator
 import com.trucdecomptable.cuissonvapeur.ui.common.SortMode
 import com.trucdecomptable.cuissonvapeur.ui.common.VegetableUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,6 +38,7 @@ data class CatalogueUiState(
 /** EF-02/EF-03/EF-04: search, sort and season-filter the 28-vegetable catalog. */
 @HiltViewModel
 class CatalogueViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val vegetableRepository: VegetableRepository,
     private val cookingSessionRepository: CookingSessionRepository,
 ) : ViewModel() {
@@ -77,6 +83,40 @@ class CatalogueViewModel @Inject constructor(
             hasActiveSession = session?.isActive == true,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CatalogueUiState())
+
+    // --- Direct start from the catalog (fix 23/08/2026) ---------------------
+    // Fabrice's "Démarrer la cuisson" from the catalog went through Home,
+    // which a stuck/forgotten session could hijack. The start flow (modal
+    // preview → commit) now lives here so one tap on the catalog button
+    // opens the confirmation modal and the timer starts without ever
+    // navigating through Home.
+
+    private val confirmModalPlan = MutableStateFlow<CookingPlan?>(null)
+
+    /** Preview-plan shown in the confirmation modal (null = hidden). */
+    val confirmModalPlanFlow: StateFlow<CookingPlan?> = confirmModalPlan
+
+    fun onStartCookingClicked() {
+        val cart = uiState.value.cart
+        if (cart.isEmpty()) return
+        if (uiState.value.hasActiveSession) return // banner/other path handles it
+        confirmModalPlan.value = CookingPlanCalculator.compute(cart)
+    }
+
+    fun onDismissConfirmModal() {
+        confirmModalPlan.value = null
+    }
+
+    fun onConfirmStartCooking(onStarted: () -> Unit) {
+        val cart = uiState.value.cart
+        if (cart.isEmpty()) return
+        viewModelScope.launch {
+            cookingSessionRepository.startCooking(cart)
+            confirmModalPlan.value = null
+            CookingTimerService.start(context)
+            onStarted()
+        }
+    }
 
     fun onQueryChange(newQuery: String) {
         query.value = newQuery

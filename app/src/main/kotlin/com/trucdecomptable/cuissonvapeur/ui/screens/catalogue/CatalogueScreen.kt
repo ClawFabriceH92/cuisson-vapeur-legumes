@@ -46,6 +46,7 @@ import com.trucdecomptable.cuissonvapeur.R
 import com.trucdecomptable.cuissonvapeur.ui.common.SettingsAction
 import com.trucdecomptable.cuissonvapeur.ui.common.SortMode
 import com.trucdecomptable.cuissonvapeur.ui.common.VegetableCard
+import com.trucdecomptable.cuissonvapeur.ui.screens.home.CookingOrderConfirmModal
 
 /**
  * EF-01..EF-05: the 28-vegetable catalog grid, with search/sort/season filter.
@@ -60,9 +61,11 @@ fun CatalogueScreen(
     onOpenCart: () -> Unit,
     onNavigateToReglages: () -> Unit,
     onResumeSession: () -> Unit,
+    onNavigateToTimer: () -> Unit,
     viewModel: CatalogueViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
+    val confirmPlan by viewModel.confirmModalPlanFlow.collectAsState()
     var showSearch by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -166,13 +169,17 @@ fun CatalogueScreen(
             }
 
             // Fabrice's feedback (23/08/2026): with a non-empty cart, show a
-            // prominent "start cooking" action right here instead of only on
-            // the Home screen — one tap jumps to the cart where Démarrer is.
-            // If a cooking session is already running, the button becomes
-            // "Reprendre" and goes straight to the active timer.
+            // prominent "start cooking" action right here — one tap opens the
+            // confirmation modal directly (no detour through Home, which a
+            // stuck session could hijack). If a cooking session is already
+            // running, the button becomes "Reprendre" → active timer.
             if (state.cartCount > 0 || state.hasActiveSession) {
                 Button(
-                    onClick = if (state.hasActiveSession) onResumeSession else onOpenCart,
+                    onClick = if (state.hasActiveSession) {
+                        onResumeSession
+                    } else {
+                        viewModel::onStartCookingClicked
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -189,6 +196,14 @@ fun CatalogueScreen(
                 }
             }
         }
+    }
+
+    confirmPlan?.let { plan ->
+        CookingOrderConfirmModal(
+            plan = plan,
+            onConfirm = { viewModel.onConfirmStartCooking(onNavigateToTimer) },
+            onDismiss = viewModel::onDismissConfirmModal,
+        )
     }
 }
 

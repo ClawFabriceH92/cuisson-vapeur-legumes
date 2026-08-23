@@ -111,6 +111,7 @@ fun AppRoot() {
                     },
                     onNavigateToReglages = { navController.navigate(Destinations.REGLAGES) },
                     onResumeSession = { navController.navigate(Destinations.TIMER) },
+                    onNavigateToTimer = { navController.navigate(Destinations.TIMER) },
                 )
             }
             composable(
