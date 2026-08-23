@@ -128,12 +128,13 @@ fun CatalogueScreen(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 SeasonQuickFilter.entries.forEach { filter ->
+                    val filterLabel = seasonFilterLabel(filter)
                     FilterChip(
                         selected = state.seasonFilter == filter,
                         onClick = { viewModel.onSeasonFilterToggle(filter) },
                         label = { Text(seasonFilterIcon(filter), style = MaterialTheme.typography.titleMedium) },
                         modifier = Modifier.semantics {
-                            contentDescription = seasonFilterLabel(filter)
+                            contentDescription = filterLabel
                         },
                     )
                 }
