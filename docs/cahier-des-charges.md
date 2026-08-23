@@ -264,6 +264,24 @@ Exemples de données reprises du code source de la page :
 
 ---
 
+## 12. Points ouverts identifiés (fonctionnel / technique — à trancher avant J1)
+
+Revue complémentaire du cahier des charges, ciblée sur les zones où le document décrit un **comportement visible** sans spécifier le **mécanisme** qui le rend possible — ce sont les points les plus susceptibles de faire dériver l'estimation §8.
+
+### 12.1 Fonctionnel / UX
+
+- **Collision de vocabulaire « panier »** : le terme désigne à la fois la sélection avant cuisson (EF-06/EF-08) et l'action pendant la cuisson (EF-18 « AJOUTER MAINTENANT »). Deux actions différentes, même mot → ambiguïté en dev comme en UI. **Proposition** : renommer l'une des deux occurrences (ex. « panier de sélection » vs « ajouter à la marmite / au panier vapeur »).
+- **Accessibilité des cibles nutritionnelles** : EF-13 utilise vert ✓ / rouge ✗ ; les symboles limitent déjà la dépendance à la couleur seule (WCAG 1.4.1), mais ce n'est pas formulé comme exigence testable. **Proposition** : ajouter explicitement « l'état atteint/non atteint ne doit jamais reposer uniquement sur la couleur » aux critères de recette de l'écran Objectifs.
+- **État dégradé si permission refusée** (`SCHEDULE_EXACT_ALARM` Android 13+, `POST_NOTIFICATIONS` Android 13+) non spécifié : alarme approximative ? bandeau d'avertissement permanent ? blocage du démarrage de cuisson ? **Proposition** : nouvel EF décrivant le comportement de repli et son déclenchement dans l'écran de démarrage.
+
+### 12.2 Technique / fiabilité
+
+- **Interaction pause/reprise avec les alarmes système non spécifiée** : EF-21 décrit le comportement UI, pas ce qui se passe côté `AlarmManager`. Il faut annuler et replanifier l'alarme de fin *et* toutes les alarmes de rappel par étape (EF-19) à chaque pause / reprise / prolongation (EF-24), en recalculant `départ(i)` pour les étapes restantes. Sans ce mécanisme, le scénario T5 (reprise exacte à 5:00 ±1 s) n'est pas atteignable de façon fiable.
+- **Reconstruction d'état après kill process ou redémarrage du téléphone** non prévue : si l'app est tuée pendant une cuisson (cas fréquent avec les surcouches OEM agressives déjà citées en §9), il faut persister un **timestamp de fin absolu** (et non une durée restante) pour que l'UI et les alarmes se resynchronisent correctement à la réouverture ou après un `BOOT_COMPLETED`. À ajouter en exigence non fonctionnelle (§4).
+- **Choix de la base de temps des alarmes** : préciser l'usage du temps écoulé (`ELAPSED_REALTIME`, via `setExactAndAllowWhileIdle`) plutôt que de l'horloge murale (`RTC`), pour éviter toute dérive en cas de changement d'heure ou de fuseau pendant une cuisson en cours.
+
+---
+
 ## Annexe A — Catalogue des 28 légumes (extrait du code source de la page)
 
 | # | Nom | Plage | Durée | Bénéfices | Catégorie | Saison | kcal/100g |
