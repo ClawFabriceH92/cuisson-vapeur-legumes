@@ -32,6 +32,7 @@ data class CatalogueUiState(
     val seasonFilter: SeasonQuickFilter? = null,
     val vegetables: List<VegetableUiModel> = emptyList(),
     val cartCount: Int = 0,
+    val cart: List<Vegetable> = emptyList(),
     val hasActiveSession: Boolean = false,
 )
 
@@ -80,6 +81,7 @@ class CatalogueViewModel @Inject constructor(
             seasonFilter = season,
             vegetables = filtered,
             cartCount = cart.size,
+            cart = cart,
             hasActiveSession = session?.isActive == true,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CatalogueUiState())
