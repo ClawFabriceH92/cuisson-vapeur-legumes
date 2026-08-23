@@ -29,6 +29,13 @@ import com.trucdecomptable.cuissonvapeur.domain.model.Vegetable
  * Since 23/08/2026 (Fabrice's request): each row also carries [Vegetable.origin]
  * (short editorial origin/history) and [Vegetable.funFacts] (cultural facts),
  * shown in the detail screen under "Origine" and "Le saviez-vous ?".
+ *
+ * On 23/08/2026 (v1.11) Fabrice validated a deviation from Annexe A for 6
+ * engine durations that were unrealistically short for steam cooking, which
+ * collapsed the cooking plan (e.g. radis 2-3 min like spinach → both added at
+ * the same time, no meaningful order). Corrected to real steam times:
+ * radis 6-8, artichauts 20-25, chou kale 5-7, patate douce 15-20, maïs 10-15,
+ * aubergines 10-15 (minutes).
  */
 object VegetableCatalog {
 
@@ -274,8 +281,8 @@ object VegetableCatalog {
         Vegetable(
             id = "patate_douce",
             name = "Patate douce",
-            displayedRange = "10-15 min",
-            durationMinutes = 15,
+            displayedRange = "15-20 min",
+            durationMinutes = 20,
             benefits = listOf("Bêta-carotène", "Fibres"),
             category = null,
             seasons = setOf(AUTOMNE),
@@ -308,8 +315,8 @@ object VegetableCatalog {
         Vegetable(
             id = "chou_kale",
             name = "Chou kale",
-            displayedRange = "3-5 min",
-            durationMinutes = 5,
+            displayedRange = "5-7 min",
+            durationMinutes = 7,
             benefits = listOf("Vitamine A, C, K"),
             category = ANTIOXYDANTS,
             seasons = setOf(AUTOMNE, HIVER),
@@ -325,8 +332,8 @@ object VegetableCatalog {
         Vegetable(
             id = "radis",
             name = "Radis",
-            displayedRange = "2-3 min",
-            durationMinutes = 3,
+            displayedRange = "6-8 min",
+            durationMinutes = 8,
             benefits = listOf("Antioxydants", "Détox"),
             category = ANTIOXYDANTS,
             seasons = setOf(PRINTEMPS, ETE),
@@ -342,8 +349,8 @@ object VegetableCatalog {
         Vegetable(
             id = "aubergines",
             name = "Aubergines",
-            displayedRange = "8-12 min",
-            durationMinutes = 12,
+            displayedRange = "10-15 min",
+            durationMinutes = 15,
             benefits = listOf("Fibres", "Antioxydants"),
             category = ANTIOXYDANTS,
             seasons = setOf(ETE),
@@ -461,8 +468,8 @@ object VegetableCatalog {
         Vegetable(
             id = "artichauts",
             name = "Artichauts",
-            displayedRange = "15-20 min",
-            durationMinutes = 20,
+            displayedRange = "20-25 min",
+            durationMinutes = 25,
             benefits = listOf("Cynarine", "Fibres"),
             category = FIBRES,
             seasons = setOf(PRINTEMPS, ETE),
@@ -495,8 +502,8 @@ object VegetableCatalog {
         Vegetable(
             id = "mais",
             name = "Maïs",
-            displayedRange = "8-10 min",
-            durationMinutes = 10,
+            displayedRange = "10-15 min",
+            durationMinutes = 15,
             benefits = listOf("Lutéine", "Fibres"),
             category = FIBRES,
             seasons = setOf(ETE),
