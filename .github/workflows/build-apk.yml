@@ -2,8 +2,12 @@ name: Build APK
 
 # Builds app/ on a GitHub-hosted runner, which has full internet access and
 # an Android SDK — unlike the sandbox this project was scaffolded in, which
-# has neither (see README.md, "Limitations connues"). This is the first
-# real compile of the :app module; expect follow-up fixes if it fails.
+# has neither (see README.md, "Limitations connues").
+#
+# The APK is then LAUNCHED ON A REAL EMULATOR before anything is published:
+# the first green build here compiled perfectly and still crashed on startup,
+# so "it compiles" is not evidence the app works. The release step runs only
+# after that smoke test passes.
 
 on:
   workflow_dispatch:
@@ -53,10 +57,35 @@ jobs:
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
 
+      # Enables hardware acceleration for the emulator on the runner, without
+      # which booting an AVD is prohibitively slow.
+      - name: Enable KVM for the emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # The gate: install the APK on a real emulator and actually launch it.
+      # If the app crashes or never reaches the foreground, this fails the job
+      # and the publish step below never runs.
+      - name: Smoke test — launch the app on an emulator (API 34)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          ram-size: 4096M
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: bash scripts/smoke-test.sh
+
       # Actions artifacts are always zip-wrapped and gated behind a GitHub
       # login, even on a public repo. A release asset is a plain, permanent,
       # directly-downloadable URL with no auth needed — publish/overwrite a
       # rolling "debug-latest" release with the freshly built APK attached.
+      # Reached only when the emulator smoke test above passed.
       - name: Publish debug APK to the rolling "debug-latest" release
         uses: softprops/action-gh-release@v2
         with:
@@ -64,7 +93,8 @@ jobs:
           name: "Debug build (rolling, latest main)"
           body: |
             Automatically rebuilt from `main` @ ${{ github.sha }} by
-            `.github/workflows/build-apk.yml`. Unsigned debug build — see
-            root README's "Limitations connues" before relying on it.
+            `.github/workflows/build-apk.yml`, and verified to launch on an
+            Android 14 (API 34) emulator before publication. Unsigned debug
+            build — see the root README's "Limitations connues".
           prerelease: true
           files: app/build/outputs/apk/debug/*.apk
