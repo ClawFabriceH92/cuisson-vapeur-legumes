@@ -11,7 +11,7 @@ class ReleaseParserTest {
 
     private fun release(
         tag: String,
-        apk: String? = "app-v${tag}.apk",
+        apk: String? = "app-${tag}.apk", // tag already includes the "v": v1.3 -> app-v1.3.apk
         draft: Boolean = false,
         body: String = "",
     ): String {
