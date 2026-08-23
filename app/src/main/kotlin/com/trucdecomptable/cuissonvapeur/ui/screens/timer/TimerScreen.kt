@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -135,9 +134,8 @@ private fun CountdownRing(remainingSeconds: Int, progressFraction: Float) {
 
     Box(
         modifier = Modifier
-            .padding(top = 24.dp)
-            .aspectRatio(1f)
-            .size(220.dp),
+            .padding(top = 8.dp)
+            .size(150.dp), // 220dp pushed the step list off-screen on tablets (v1.10 fix)
         contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(

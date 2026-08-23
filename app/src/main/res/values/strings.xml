@@ -125,7 +125,7 @@
     <string name="modal_start_cooking">Démarrer la cuisson</string>
     <string name="modal_step_season_time">%1$s · %2$s</string>
     <string name="modal_step_now">Maintenant</string>
-    <string name="modal_step_in_n_min">Dans %1$d min — Ajouter au panier</string>
+    <string name="modal_step_in_n_min">Dans %1$d min</string>
 
     <!-- Timer actif (EF-18..EF-24) -->
     <string name="timer_paused">En pause</string>

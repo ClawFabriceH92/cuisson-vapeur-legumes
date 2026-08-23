@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.trucdecomptable.cuissonvapeur.R
 import com.trucdecomptable.cuissonvapeur.domain.plan.CookingPlan
@@ -86,23 +87,32 @@ private fun StepRow(index: Int, step: CookingStep) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text("$index.", style = MaterialTheme.typography.labelLarge)
+            Text("$index.", style = MaterialTheme.typography.titleMedium)
             Text(step.vegetable.emoji, style = MaterialTheme.typography.titleMedium)
             Column(modifier = Modifier.weight(1f)) {
-                Text(step.vegetable.name, style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    step.vegetable.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
                 Text(
                     stringResource(R.string.modal_step_season_time, seasonLabel(step.vegetable.seasons), step.vegetable.displayedRange),
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
+            // Short, readable offset label ("Maintenant" / "Dans 4 min") —
+            // the previous long "— Ajouter au panier" suffix crushed the
+            // vegetable name (Fabrice's feedback, v1.10).
             Text(
                 text = if (step.isImmediate) {
                     stringResource(R.string.modal_step_now)
                 } else {
                     stringResource(R.string.modal_step_in_n_min, step.startOffsetMinutes)
                 },
-                style = MaterialTheme.typography.labelMedium,
-                color = if (step.isImmediate) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.titleSmall,
+                color = if (step.isImmediate) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
             )
         }
     }
