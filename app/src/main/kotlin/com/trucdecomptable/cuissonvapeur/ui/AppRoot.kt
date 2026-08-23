@@ -109,6 +109,7 @@ fun AppRoot() {
                             restoreState = true
                         }
                     },
+                    onNavigateToReglages = { navController.navigate(Destinations.REGLAGES) },
                 )
             }
             composable(
@@ -119,13 +120,13 @@ fun AppRoot() {
                 VegetableDetailScreen(vegetableId = vegetableId, onBack = { navController.popBackStack() })
             }
             composable(Destinations.FAVORIS) {
-                FavorisScreen()
+                FavorisScreen(onNavigateToReglages = { navController.navigate(Destinations.REGLAGES) })
             }
             composable(Destinations.OBJECTIFS) {
-                ObjectifsScreen()
+                ObjectifsScreen(onNavigateToReglages = { navController.navigate(Destinations.REGLAGES) })
             }
             composable(Destinations.CONSEILS) {
-                ConseilsScreen()
+                ConseilsScreen(onNavigateToReglages = { navController.navigate(Destinations.REGLAGES) })
             }
             composable(Destinations.REGLAGES) {
                 ReglagesScreen(onBack = { navController.popBackStack() })

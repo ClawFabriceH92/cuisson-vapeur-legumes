@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.trucdecomptable.cuissonvapeur.R
+import com.trucdecomptable.cuissonvapeur.ui.common.SettingsAction
 
 /**
  * EF-25: the 6 tips from the source website, verbatim (température 100°C,
@@ -24,11 +25,16 @@ import com.trucdecomptable.cuissonvapeur.R
  */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-fun ConseilsScreen() {
+fun ConseilsScreen(onNavigateToReglages: () -> Unit) {
     val tips = stringArrayResource(R.array.conseils_items)
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.nav_conseils)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.nav_conseils)) },
+                actions = { SettingsAction(onClick = onNavigateToReglages) },
+            )
+        },
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),

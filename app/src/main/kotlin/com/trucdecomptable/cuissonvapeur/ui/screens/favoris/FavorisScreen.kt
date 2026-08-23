@@ -27,15 +27,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.trucdecomptable.cuissonvapeur.R
+import com.trucdecomptable.cuissonvapeur.ui.common.SettingsAction
 
 /** EF-12: "Favoris" — list with a clickable "Sélectionné / Sélectionner" state + removal. */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-fun FavorisScreen(viewModel: FavorisViewModel = hiltViewModel()) {
+fun FavorisScreen(
+    onNavigateToReglages: () -> Unit,
+    viewModel: FavorisViewModel = hiltViewModel(),
+) {
     val favorites by viewModel.favorites.collectAsState()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.nav_favoris)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.nav_favoris)) },
+                actions = { SettingsAction(onClick = onNavigateToReglages) },
+            )
+        },
     ) { padding ->
         if (favorites.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {

@@ -43,6 +43,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.trucdecomptable.cuissonvapeur.R
+import com.trucdecomptable.cuissonvapeur.ui.common.SettingsAction
 import com.trucdecomptable.cuissonvapeur.ui.common.SortMode
 import com.trucdecomptable.cuissonvapeur.ui.common.VegetableCard
 
@@ -57,6 +58,7 @@ import com.trucdecomptable.cuissonvapeur.ui.common.VegetableCard
 fun CatalogueScreen(
     onOpenDetail: (String) -> Unit,
     onOpenCart: () -> Unit,
+    onNavigateToReglages: () -> Unit,
     viewModel: CatalogueViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -67,6 +69,7 @@ fun CatalogueScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.nav_catalogue)) },
                 actions = {
+                    SettingsAction(onClick = onNavigateToReglages)
                     // Loupe : ouvre/referme la recherche pour laisser la place aux légumes.
                     IconButton(onClick = { showSearch = !showSearch }) {
                         Icon(

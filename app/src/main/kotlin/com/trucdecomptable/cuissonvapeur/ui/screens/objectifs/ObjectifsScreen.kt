@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.trucdecomptable.cuissonvapeur.R
 import com.trucdecomptable.cuissonvapeur.domain.goals.NutritionGoal
 import com.trucdecomptable.cuissonvapeur.ui.common.categoryLabel
+import com.trucdecomptable.cuissonvapeur.ui.common.SettingsAction
 import com.trucdecomptable.cuissonvapeur.ui.theme.GoalPendingRed
 import com.trucdecomptable.cuissonvapeur.ui.theme.GoalReachedGreen
 
@@ -41,11 +42,19 @@ import com.trucdecomptable.cuissonvapeur.ui.theme.GoalReachedGreen
  */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-fun ObjectifsScreen(viewModel: ObjectifsViewModel = hiltViewModel()) {
+fun ObjectifsScreen(
+    onNavigateToReglages: () -> Unit,
+    viewModel: ObjectifsViewModel = hiltViewModel(),
+) {
     val goals by viewModel.goals.collectAsState()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.nav_objectifs)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.nav_objectifs)) },
+                actions = { SettingsAction(onClick = onNavigateToReglages) },
+            )
+        },
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
