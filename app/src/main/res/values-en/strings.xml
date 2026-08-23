@@ -40,6 +40,7 @@
     <string name="catalogue_sort_time">Time</string>
     <string name="catalogue_sort_name">Name</string>
     <string name="catalogue_start_cooking">Start cooking — %1$d vegetable(s)</string>
+    <string name="catalogue_resume_session">Resume current cooking</string>
 
     <string name="season_printemps">Spring</string>
     <string name="season_ete">Summer</string>
@@ -118,6 +119,9 @@
     <string name="home_cart_empty">Your cart is empty. Browse the catalog to pick some vegetables.</string>
     <string name="home_browse_catalogue">Browse catalog</string>
     <string name="home_start_cooking">Start cooking</string>
+    <string name="home_session_active">🍳 Cooking in progress</string>
+    <string name="home_session_active_hint">A %1$d-min cooking session is running. Resume it or stop it.</string>
+    <string name="home_resume_session">Resume</string>
 
     <!-- Modal "Ordre optimal de cuisson" (EF-17) -->
     <string name="modal_title">Optimal cooking order</string>

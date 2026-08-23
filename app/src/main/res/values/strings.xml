@@ -33,6 +33,7 @@
     <string name="catalogue_sort_time">Temps</string>
     <string name="catalogue_sort_name">Nom</string>
     <string name="catalogue_start_cooking">Démarrer la cuisson — %1$d légume(s)</string>
+    <string name="catalogue_resume_session">Reprendre la cuisson en cours</string>
 
     <string name="season_printemps">Printemps</string>
     <string name="season_ete">Été</string>
@@ -111,6 +112,9 @@
     <string name="home_cart_empty">Votre panier est vide. Parcourez le catalogue pour choisir des légumes.</string>
     <string name="home_browse_catalogue">Voir le catalogue</string>
     <string name="home_start_cooking">Démarrer la cuisson</string>
+    <string name="home_session_active">🍳 Cuisson en cours</string>
+    <string name="home_session_active_hint">Une cuisson de %1$d min est en cours. Reprenez le décompte ou arrêtez-la.</string>
+    <string name="home_resume_session">Reprendre</string>
 
     <!-- Modal "Ordre optimal de cuisson" (EF-17) -->
     <string name="modal_title">Ordre optimal de cuisson</string>

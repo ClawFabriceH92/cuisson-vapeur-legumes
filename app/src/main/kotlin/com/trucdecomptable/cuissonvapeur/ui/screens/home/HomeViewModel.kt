@@ -85,6 +85,14 @@ class HomeViewModel @Inject constructor(
         confirmModalPlan.value = null
     }
 
+    /** Stops a running session from the Home banner (EF-21, fix 23/08/2026). */
+    fun onStopSession() {
+        viewModelScope.launch {
+            cookingSessionRepository.stop()
+            CookingTimerService.stop(context)
+        }
+    }
+
     /** EF-17 "Démarrer la cuisson": commits the real, timestamped session and its alarms. */
     fun onConfirmStartCooking(onStarted: () -> Unit) {
         val cart = uiState.value.cart

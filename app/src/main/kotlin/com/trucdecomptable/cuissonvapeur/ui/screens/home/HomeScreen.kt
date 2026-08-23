@@ -18,12 +18,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -46,12 +46,10 @@ fun HomeScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    // A session becomes active as soon as it's confirmed in the modal below;
-    // this screen also re-navigates to Timer if the app is reopened while a
-    // session from a previous launch is still running (EF-10-adjacent).
-    LaunchedEffect(state.activeSession?.isActive) {
-        if (state.activeSession?.isActive == true) onNavigateToTimer()
-    }
+    // NO automatic redirect to the Timer: it made Home unreachable when a
+    // (possibly forgotten) cooking session was still active — Fabrice could
+    // never tap the Home tab. Instead, show a banner with Reprendre / Arrêter
+    // (fix 23/08/2026).
 
     Scaffold(
         topBar = {
@@ -79,6 +77,50 @@ fun HomeScreen(
                 if (state.cart.isNotEmpty()) {
                     TextButton(onClick = viewModel::onClearCart) {
                         Text(stringResource(R.string.home_clear_cart))
+                    }
+                }
+            }
+
+            // Running-session banner: the user always sees WHY Home is
+            // occupied and can resume or stop in one tap.
+            state.activeSession?.let { session ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    colors = androidx.compose.material3.CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    ),
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+                        Text(
+                            text = stringResource(R.string.home_session_active),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Text(
+                            text = stringResource(
+                                R.string.home_session_active_hint,
+                                session.totalMinutes,
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            Button(onClick = onNavigateToTimer, modifier = Modifier.weight(1f).height(56.dp)) {
+                                Text(stringResource(R.string.home_resume_session))
+                            }
+                            OutlinedButton(
+                                onClick = viewModel::onStopSession,
+                                modifier = Modifier.weight(1f).height(56.dp),
+                                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.error,
+                                ),
+                            ) {
+                                Text(stringResource(R.string.timer_stop))
+                            }
+                        }
                     }
                 }
             }

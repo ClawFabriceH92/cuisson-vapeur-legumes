@@ -59,6 +59,7 @@ fun CatalogueScreen(
     onOpenDetail: (String) -> Unit,
     onOpenCart: () -> Unit,
     onNavigateToReglages: () -> Unit,
+    onResumeSession: () -> Unit,
     viewModel: CatalogueViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -167,16 +168,22 @@ fun CatalogueScreen(
             // Fabrice's feedback (23/08/2026): with a non-empty cart, show a
             // prominent "start cooking" action right here instead of only on
             // the Home screen — one tap jumps to the cart where Démarrer is.
-            if (state.cartCount > 0) {
+            // If a cooking session is already running, the button becomes
+            // "Reprendre" and goes straight to the active timer.
+            if (state.cartCount > 0 || state.hasActiveSession) {
                 Button(
-                    onClick = onOpenCart,
+                    onClick = if (state.hasActiveSession) onResumeSession else onOpenCart,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .height(64.dp), // NFR: cibles ≥ 64dp
                 ) {
                     Text(
-                        text = stringResource(R.string.catalogue_start_cooking, state.cartCount),
+                        text = if (state.hasActiveSession) {
+                            stringResource(R.string.catalogue_resume_session)
+                        } else {
+                            stringResource(R.string.catalogue_start_cooking, state.cartCount)
+                        },
                         style = MaterialTheme.typography.titleMedium,
                     )
                 }

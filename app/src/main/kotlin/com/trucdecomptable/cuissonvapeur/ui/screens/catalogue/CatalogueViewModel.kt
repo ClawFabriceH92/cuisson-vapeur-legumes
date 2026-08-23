@@ -2,6 +2,7 @@ package com.trucdecomptable.cuissonvapeur.ui.screens.catalogue
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trucdecomptable.cuissonvapeur.data.repository.CookingSessionRepository
 import com.trucdecomptable.cuissonvapeur.data.repository.VegetableRepository
 import com.trucdecomptable.cuissonvapeur.domain.model.ALL_YEAR
 import com.trucdecomptable.cuissonvapeur.domain.model.Season
@@ -26,12 +27,14 @@ data class CatalogueUiState(
     val seasonFilter: SeasonQuickFilter? = null,
     val vegetables: List<VegetableUiModel> = emptyList(),
     val cartCount: Int = 0,
+    val hasActiveSession: Boolean = false,
 )
 
 /** EF-02/EF-03/EF-04: search, sort and season-filter the 28-vegetable catalog. */
 @HiltViewModel
 class CatalogueViewModel @Inject constructor(
     private val vegetableRepository: VegetableRepository,
+    private val cookingSessionRepository: CookingSessionRepository,
 ) : ViewModel() {
 
     private val query = MutableStateFlow("")
@@ -44,7 +47,8 @@ class CatalogueViewModel @Inject constructor(
         seasonFilter,
         vegetableRepository.observeCart(),
         vegetableRepository.observeFavoriteIds(),
-    ) { q, sort, season, cart, favoriteIds ->
+        cookingSessionRepository.observeSession(),
+    ) { q, sort, season, cart, favoriteIds, session ->
         val cartIds = cart.map { it.id }.toSet()
 
         val filtered = vegetableRepository.catalog
@@ -61,6 +65,7 @@ class CatalogueViewModel @Inject constructor(
             seasonFilter = season,
             vegetables = filtered,
             cartCount = cart.size,
+            hasActiveSession = session?.isActive == true,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CatalogueUiState())
 
