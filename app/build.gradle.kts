@@ -89,6 +89,8 @@ android {
 
     buildFeatures {
         compose = true
+        // Needed by UpdateChecker (BuildConfig.VERSION_NAME) — AGP 8 disables it by default.
+        buildConfig = true
     }
 
     packaging {
