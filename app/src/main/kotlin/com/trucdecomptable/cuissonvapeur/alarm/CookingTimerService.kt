@@ -5,11 +5,11 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
-import androidx.core.app.ServiceInfoCompat
 import com.trucdecomptable.cuissonvapeur.CuissonVapeurApp
 import com.trucdecomptable.cuissonvapeur.MainActivity
 import com.trucdecomptable.cuissonvapeur.R
@@ -73,7 +73,7 @@ class CookingTimerService : Service() {
                 this,
                 NOTIFICATION_ID,
                 notification,
-                ServiceInfoCompat.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
             )
         } else {
             startForeground(NOTIFICATION_ID, notification)
