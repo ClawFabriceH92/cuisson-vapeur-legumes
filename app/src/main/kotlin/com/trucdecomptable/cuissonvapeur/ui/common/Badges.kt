@@ -1,13 +1,17 @@
 package com.trucdecomptable.cuissonvapeur.ui.common
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trucdecomptable.cuissonvapeur.R
@@ -24,12 +28,7 @@ fun SeasonBadge(seasons: Set<Season>, modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(50),
         color = MaterialTheme.colorScheme.secondaryContainer,
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            fontSize = 11.sp,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-        )
+        BadgeContent(label)
     }
 }
 
@@ -65,11 +64,29 @@ fun CategoryBadge(category: NutritionCategory, modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(50),
         color = MaterialTheme.colorScheme.tertiaryContainer,
     ) {
+        BadgeContent(categoryLabel(category))
+    }
+}
+
+/**
+ * Shared badge body: fixed 28dp height, single line, centered — so every
+ * "bulle" (season, category, …) has exactly the same size regardless of its
+ * label length (Fabrice's feedback, v1.9). Width is controlled by the caller
+ * (natural width or weight(1f) in a Row for equal split).
+ */
+@Composable
+private fun BadgeContent(label: String) {
+    Box(
+        modifier = Modifier.height(28.dp),
+        contentAlignment = Alignment.Center,
+    ) {
         Text(
-            text = categoryLabel(category),
+            text = label,
             style = MaterialTheme.typography.labelSmall,
             fontSize = 11.sp,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(horizontal = 8.dp),
         )
     }
 }

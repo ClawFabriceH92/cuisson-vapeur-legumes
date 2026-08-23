@@ -42,11 +42,15 @@ import com.trucdecomptable.cuissonvapeur.ui.theme.GoalReachedGreen
 fun TimerScreen(onSessionEnded: () -> Unit, viewModel: TimerViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(state.isActive) {
-        if (!state.isActive) onSessionEnded()
+    // Redirect only once the session flow has emitted (hasLoaded): the
+    // initial default state is isActive=false and must NOT pop back before
+    // Room emits the just-started session, or the countdown flashes and
+    // disappears (fix 23/08/2026, v1.9).
+    LaunchedEffect(state.hasLoaded, state.isActive) {
+        if (state.hasLoaded && !state.isActive) onSessionEnded()
     }
 
-    if (!state.isActive) return
+    if (!state.hasLoaded || !state.isActive) return
 
     // A session whose countdown has reached zero is finished: show it as
     // such instead of a frozen 00:00, so the user knows to press Arrêter

@@ -27,6 +27,11 @@ enum class StepState { A_VENIR, AJOUTER_MAINTENANT, AJOUTEE }
 data class TimerStep(val step: CookingStep, val state: StepState)
 
 data class TimerUiState(
+    /** False until the session flow has emitted at least once. Without this
+     *  flag the initial default state (isActive = false) made TimerScreen pop
+     *  the back stack before Room had emitted the just-started session — the
+     *  countdown flashed and vanished (fix 23/08/2026, v1.9). */
+    val hasLoaded: Boolean = false,
     val isActive: Boolean = false,
     val isPaused: Boolean = false,
     val totalSeconds: Int = 0,
@@ -69,7 +74,9 @@ class TimerViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TimerUiState())
 
     private fun toUiState(session: CookingSessionEntity?, now: Long): TimerUiState {
-        if (session == null || !session.isActive) return TimerUiState(isActive = false)
+        if (session == null || !session.isActive) {
+            return TimerUiState(hasLoaded = true, isActive = false)
+        }
 
         val plan = recomputePlan(session)
         val totalSeconds = plan.totalMinutes * 60
@@ -98,6 +105,7 @@ class TimerViewModel @Inject constructor(
         }
 
         return TimerUiState(
+            hasLoaded = true,
             isActive = true,
             isPaused = session.isPaused,
             totalSeconds = totalSeconds,

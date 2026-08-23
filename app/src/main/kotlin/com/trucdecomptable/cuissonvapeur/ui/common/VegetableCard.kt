@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.trucdecomptable.cuissonvapeur.R
 import com.trucdecomptable.cuissonvapeur.domain.model.Vegetable
@@ -89,8 +90,28 @@ fun VegetableCard(
                 modifier = Modifier.padding(top = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                SeasonBadge(seasons = vegetable.seasons)
-                vegetable.category?.let { CategoryBadge(category = it) }
+                // When both badges are present, each takes exactly half the
+                // row: same size every time (Fabrice's feedback, v1.9).
+                val category = vegetable.category
+                if (category != null) {
+                    SeasonBadge(seasons = vegetable.seasons, modifier = Modifier.weight(1f))
+                    CategoryBadge(category = category, modifier = Modifier.weight(1f))
+                } else {
+                    SeasonBadge(seasons = vegetable.seasons)
+                }
+            }
+
+            // Bienfaits sous la saison (Fabrice, v1.9): the vegetable's health
+            // benefits sit right below the season/category badges.
+            if (vegetable.benefits.isNotEmpty()) {
+                Text(
+                    text = vegetable.benefits.take(2).joinToString(" · "),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 6.dp),
+                )
             }
         }
     }
