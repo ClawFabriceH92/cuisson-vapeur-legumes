@@ -32,6 +32,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.trucdecomptable.cuissonvapeur.R
+import com.trucdecomptable.cuissonvapeur.ui.common.CategoryBadge
+import com.trucdecomptable.cuissonvapeur.ui.common.SeasonBadge
 
 /** Spec §5: "Accueil (panier + décompte éventuel)" — the app's home/cart screen. */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
@@ -105,6 +107,14 @@ fun HomeScreen(
                                     Column {
                                         Text(vegetable.name, style = MaterialTheme.typography.titleMedium)
                                         Text(vegetable.displayedRange, style = MaterialTheme.typography.bodySmall)
+                                        // Infos (saison + catégorie) affichées sous chaque légume du panier.
+                                        Row(
+                                            modifier = Modifier.padding(top = 4.dp),
+                                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        ) {
+                                            SeasonBadge(seasons = vegetable.seasons)
+                                            vegetable.category?.let { CategoryBadge(category = it) }
+                                        }
                                     }
                                 }
                                 IconButton(onClick = { viewModel.onRemoveFromCart(vegetable.id) }) {
