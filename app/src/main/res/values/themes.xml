@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Minimal XML theme: the actual UI is 100% Jetpack Compose (colors,
+        typography — see ui/theme/*.kt), so this only needs to cover the
+        pre-Compose window (splash screen background, status/nav bar) before
+        setContent {} takes over.
+    -->
+    <style name="Theme.CuissonVapeur" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.CuissonVapeur</item>
+    </style>
+
+    <!-- EF-23: dedicated, always-dark full-screen alarm theme (see AlarmActivity). -->
+    <style name="Theme.CuissonVapeur.Alarm">
+        <item name="android:windowBackground">@color/alarm_background</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:statusBarColor">@color/alarm_background</item>
+        <item name="android:navigationBarColor">@color/alarm_background</item>
+    </style>
+</resources>

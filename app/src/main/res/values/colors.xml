@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Only used by the pre-Compose XML theme (splash screen background,
+         window background before Compose content is set) — the real palette
+         lives in ui/theme/Color.kt and is applied through Material 3's
+         ColorScheme, not through these XML resources. -->
+    <color name="splash_background">#FAFAF6</color>
+    <color name="alarm_background">#0F3D24</color>
+</resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Placeholder launcher foreground — a simplified steaming-pot glyph.
+    NOT real brand art (see root README, "Limitations connues" — icons are
+    placeholders, no design asset was supplied by the spec).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/vector"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Pot body -->
+    <path
+        android:fillColor="#A6D6BB"
+        android:pathData="M34,58 L74,58 L70,78 A6,6 0 0 1 64,83 L44,83 A6,6 0 0 1 38,78 Z" />
+    <!-- Pot rim -->
+    <path
+        android:fillColor="#A6D6BB"
+        android:pathData="M30,54 h48 v6 h-48 z" />
+    <!-- Steam wisps -->
+    <path
+        android:fillColor="#A6D6BB"
+        android:pathData="M46,24 c-4,6 4,8 0,14 c-4,6 4,8 0,14"
+        android:strokeColor="#A6D6BB"
+        android:strokeWidth="4"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="#A6D6BB"
+        android:pathData="M62,24 c-4,6 4,8 0,14 c-4,6 4,8 0,14"
+        android:strokeColor="#A6D6BB"
+        android:strokeWidth="4"
+        android:strokeLineCap="round" />
+</vector>

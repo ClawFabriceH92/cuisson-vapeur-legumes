@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    First-pass English translation (EF-28, D4: "FR + EN, i18n prête pour ES").
+    Not reviewed by a native English speaker — see root README,
+    "Limitations connues", and note the spec explicitly leaves the wider
+    i18n governance question (which languages, who reviews them) open and
+    out of scope for this task.
+-->
+<resources>
+    <string name="app_name">Steam Veggies</string>
+
+    <!-- Notification channels -->
+    <string name="notification_channel_cooking_progress_name">Cooking in progress</string>
+    <string name="notification_channel_cooking_progress_desc">Remaining time during a steam cooking session</string>
+    <string name="notification_channel_step_reminder_name">Add reminders</string>
+    <string name="notification_channel_step_reminder_desc">A light reminder to add a vegetable to the steamer</string>
+    <string name="notification_channel_end_alarm_name">End-of-cooking alarm</string>
+    <string name="notification_channel_end_alarm_desc">Sound and vibration alert when cooking is done</string>
+
+    <!-- Notifications -->
+    <string name="alarm_notification_title">Cooking done 🎉</string>
+    <string name="alarm_notification_text">All your vegetables are ready.</string>
+    <string name="step_reminder_title">%1$s — time to add</string>
+    <string name="step_reminder_text">It\'s time to add this vegetable to the steamer.</string>
+    <string name="notification_cooking_starting">Starting…</string>
+    <string name="notification_cooking_paused">Paused — %1$s</string>
+    <string name="notification_cooking_title">Steam cooking in progress</string>
+    <string name="action_extend_2min">Extend +2 min</string>
+
+    <!-- Navigation -->
+    <string name="nav_accueil">Home</string>
+    <string name="nav_catalogue">Catalog</string>
+    <string name="nav_favoris">Favorites</string>
+    <string name="nav_objectifs">Goals</string>
+    <string name="nav_conseils">Tips</string>
+    <string name="nav_reglages">Settings</string>
+
+    <!-- Catalogue (EF-01..EF-05) -->
+    <string name="catalogue_search_hint">Search a vegetable or a benefit…</string>
+    <string name="catalogue_sort_time">Time</string>
+    <string name="catalogue_sort_name">Name</string>
+
+    <string name="season_printemps">Spring</string>
+    <string name="season_ete">Summer</string>
+    <string name="season_automne">Autumn</string>
+    <string name="season_hiver">Winter</string>
+    <string name="season_all_year">All year round</string>
+
+    <string name="category_antioxydants">Antioxidants</string>
+    <string name="category_fibres">Fiber</string>
+    <string name="category_vitamine_c">Vitamin C</string>
+    <string name="category_proteines">Plant protein</string>
+    <string name="category_hydratation">Hydration</string>
+
+    <string name="vegetable_duration_range">%1$s</string>
+    <string name="vegetable_kcal">%1$d kcal / 100 g</string>
+    <string name="vegetable_benefits_title">Benefits</string>
+
+    <string name="cd_back">Back</string>
+    <string name="cd_remove_favorite">Remove from favorites</string>
+    <string name="cd_add_favorite">Add to favorites</string>
+    <string name="cd_remove_from_cart">Remove from cart</string>
+
+    <!-- Favoris (EF-11/EF-12) -->
+    <string name="favoris_empty">No favorite vegetables yet. Add some from the catalog!</string>
+    <string name="favoris_selected">Selected</string>
+    <string name="favoris_select">Select</string>
+
+    <!-- Objectifs nutritionnels (EF-13/EF-14) -->
+    <string name="objectif_atteint">Reached!</string>
+    <string name="objectif_non_atteint">Not reached</string>
+    <string name="objectif_counter">%1$d / %2$d vegetables</string>
+
+    <!-- Réglages (EF-26..EF-29) -->
+    <string name="reglages_section_alarme">Alarm</string>
+    <string name="reglages_volume">Volume</string>
+    <string name="reglages_son">Sound</string>
+    <string name="reglages_vibration">Vibration</string>
+    <string name="reglages_vibration_intensite">Vibration intensity</string>
+    <string name="reglages_duree_alarme">Alarm duration — %1$d s</string>
+    <string name="reglages_section_apparence">Appearance</string>
+    <string name="reglages_section_langue">Language</string>
+    <string name="reglages_section_donnees">Data</string>
+    <string name="reglages_privacy_note">No data ever leaves your phone: no account, no collection, no DPO required.</string>
+    <string name="reglages_reset_data">Reset local data</string>
+    <string name="reglages_reset_confirm_title">Reset?</string>
+    <string name="reglages_reset_confirm_text">This will erase your favorites, cart and settings on this device. This cannot be undone.</string>
+    <string name="reglages_reset_confirm_action">Reset</string>
+    <string name="action_annuler">Cancel</string>
+
+    <string name="sound_bip">Beep</string>
+    <string name="sound_carillon">Chime</string>
+    <string name="sound_longue_note">Long note</string>
+
+    <string name="theme_clair">Light</string>
+    <string name="theme_sombre">Dark</string>
+    <string name="theme_systeme">System</string>
+
+    <string name="language_fr">Français</string>
+    <string name="language_en">English</string>
+
+    <!-- Accueil / panier (EF-06..EF-10) -->
+    <string name="home_cart_count">%1$d vegetable(s) in the cart</string>
+    <string name="home_clear_cart">Clear</string>
+    <string name="home_cart_empty">Your cart is empty. Browse the catalog to pick some vegetables.</string>
+    <string name="home_browse_catalogue">Browse catalog</string>
+    <string name="home_start_cooking">Start cooking</string>
+
+    <!-- Modal "Ordre optimal de cuisson" (EF-17) -->
+    <string name="modal_title">Optimal cooking order</string>
+    <string name="modal_instructions_title">Instructions</string>
+    <string name="modal_instructions_total_time">Total time: %1$d min</string>
+    <string name="modal_instructions_order">Add each vegetable in the order shown above.</string>
+    <string name="modal_instructions_same_time">Every vegetable will be ready at the same time.</string>
+    <string name="modal_start_cooking">Start cooking</string>
+    <string name="modal_step_season_time">%1$s · %2$s</string>
+    <string name="modal_step_now">Now</string>
+    <string name="modal_step_in_n_min">In %1$d min — add to the steamer</string>
+
+    <!-- Timer actif (EF-18..EF-24) -->
+    <string name="timer_paused">Paused</string>
+    <string name="timer_steps_title">Cooking steps</string>
+    <string name="timer_resume">Resume</string>
+    <string name="timer_pause">Pause</string>
+    <string name="timer_stop">Stop</string>
+    <string name="timer_extend_n">+%1$d min</string>
+
+    <string name="step_state_a_venir">Upcoming</string>
+    <string name="step_state_ajouter_maintenant">ADD NOW</string>
+    <string name="step_state_ajoutee">Added ✓</string>
+
+    <!-- Alarme de fin (EF-23) -->
+    <string name="alarm_screen_title">Cooking done!</string>
+    <string name="alarm_ok_ready">OK, it\'s ready</string>
+    <string name="alarm_extend_2min">Extend +2 min</string>
+
+    <!-- Conseils (EF-25) -->
+    <string-array name="conseils_items">
+        <item>Keep the water at a steady 100 °C boil for even steam cooking.</item>
+        <item>Flavor the cooking water with herbs — thyme, bay leaf, rosemary — to gently infuse your vegetables.</item>
+        <item>Cut vegetables into evenly sized pieces for consistent cooking.</item>
+        <item>Check doneness with a fork: it should slide in easily.</item>
+        <item>Steaming preserves about 80% of vitamins, versus only 40% for boiling.</item>
+        <item>Serve immediately, with a drizzle of olive oil and a pinch of sea salt.</item>
+    </string-array>
+</resources>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cuisson vapeur</string>
+
+    <!-- Notification channels -->
+    <string name="notification_channel_cooking_progress_name">Cuisson en cours</string>
+    <string name="notification_channel_cooking_progress_desc">Temps restant pendant une cuisson vapeur</string>
+    <string name="notification_channel_step_reminder_name">Rappels d\'ajout</string>
+    <string name="notification_channel_step_reminder_desc">Rappel léger pour ajouter un légume au panier vapeur</string>
+    <string name="notification_channel_end_alarm_name">Alarme de fin de cuisson</string>
+    <string name="notification_channel_end_alarm_desc">Alerte sonore et vibrante quand la cuisson est terminée</string>
+
+    <!-- Notifications -->
+    <string name="alarm_notification_title">Cuisson terminée 🎉</string>
+    <string name="alarm_notification_text">Tous vos légumes sont prêts.</string>
+    <string name="step_reminder_title">%1$s — à ajouter</string>
+    <string name="step_reminder_text">C\'est le moment d\'ajouter ce légume au panier vapeur.</string>
+    <string name="notification_cooking_starting">Démarrage…</string>
+    <string name="notification_cooking_paused">En pause — %1$s</string>
+    <string name="notification_cooking_title">Cuisson vapeur en cours</string>
+    <string name="action_extend_2min">Prolonger +2 min</string>
+
+    <!-- Navigation -->
+    <string name="nav_accueil">Accueil</string>
+    <string name="nav_catalogue">Catalogue</string>
+    <string name="nav_favoris">Favoris</string>
+    <string name="nav_objectifs">Objectifs</string>
+    <string name="nav_conseils">Conseils</string>
+    <string name="nav_reglages">Réglages</string>
+
+    <!-- Catalogue (EF-01..EF-05) -->
+    <string name="catalogue_search_hint">Rechercher un légume ou un bienfait…</string>
+    <string name="catalogue_sort_time">Temps</string>
+    <string name="catalogue_sort_name">Nom</string>
+
+    <string name="season_printemps">Printemps</string>
+    <string name="season_ete">Été</string>
+    <string name="season_automne">Automne</string>
+    <string name="season_hiver">Hiver</string>
+    <string name="season_all_year">Toute l\'année</string>
+
+    <string name="category_antioxydants">Antioxydants</string>
+    <string name="category_fibres">Fibres</string>
+    <string name="category_vitamine_c">Vitamine C</string>
+    <string name="category_proteines">Protéines végétales</string>
+    <string name="category_hydratation">Hydratation</string>
+
+    <string name="vegetable_duration_range">%1$s</string>
+    <string name="vegetable_kcal">%1$d kcal / 100 g</string>
+    <string name="vegetable_benefits_title">Bienfaits</string>
+
+    <string name="cd_back">Retour</string>
+    <string name="cd_remove_favorite">Retirer des favoris</string>
+    <string name="cd_add_favorite">Ajouter aux favoris</string>
+    <string name="cd_remove_from_cart">Retirer du panier</string>
+
+    <!-- Favoris (EF-11/EF-12) -->
+    <string name="favoris_empty">Aucun légume favori pour l\'instant. Ajoutez-en depuis le catalogue !</string>
+    <string name="favoris_selected">Sélectionné</string>
+    <string name="favoris_select">Sélectionner</string>
+
+    <!-- Objectifs nutritionnels (EF-13/EF-14) -->
+    <string name="objectif_atteint">Atteint !</string>
+    <string name="objectif_non_atteint">Non atteint</string>
+    <string name="objectif_counter">%1$d / %2$d légumes</string>
+
+    <!-- Réglages (EF-26..EF-29) -->
+    <string name="reglages_section_alarme">Alarme</string>
+    <string name="reglages_volume">Volume</string>
+    <string name="reglages_son">Son</string>
+    <string name="reglages_vibration">Vibration</string>
+    <string name="reglages_vibration_intensite">Intensité de la vibration</string>
+    <string name="reglages_duree_alarme">Durée de l\'alarme — %1$d s</string>
+    <string name="reglages_section_apparence">Apparence</string>
+    <string name="reglages_section_langue">Langue</string>
+    <string name="reglages_section_donnees">Données</string>
+    <string name="reglages_privacy_note">Aucune donnée ne sort de votre téléphone : pas de compte, pas de collecte, pas de DPO requis.</string>
+    <string name="reglages_reset_data">Réinitialiser les données locales</string>
+    <string name="reglages_reset_confirm_title">Réinitialiser ?</string>
+    <string name="reglages_reset_confirm_text">Cela effacera vos favoris, votre panier et vos réglages sur cet appareil. Cette action est irréversible.</string>
+    <string name="reglages_reset_confirm_action">Réinitialiser</string>
+    <string name="action_annuler">Annuler</string>
+
+    <string name="sound_bip">Bip</string>
+    <string name="sound_carillon">Carillon</string>
+    <string name="sound_longue_note">Longue note</string>
+
+    <string name="theme_clair">Clair</string>
+    <string name="theme_sombre">Sombre</string>
+    <string name="theme_systeme">Système</string>
+
+    <string name="language_fr">Français</string>
+    <string name="language_en">English</string>
+
+    <!-- Accueil / panier (EF-06..EF-10) -->
+    <string name="home_cart_count">%1$d légume(s) dans le panier</string>
+    <string name="home_clear_cart">Vider</string>
+    <string name="home_cart_empty">Votre panier est vide. Parcourez le catalogue pour choisir des légumes.</string>
+    <string name="home_browse_catalogue">Voir le catalogue</string>
+    <string name="home_start_cooking">Démarrer la cuisson</string>
+
+    <!-- Modal "Ordre optimal de cuisson" (EF-17) -->
+    <string name="modal_title">Ordre optimal de cuisson</string>
+    <string name="modal_instructions_title">Instructions</string>
+    <string name="modal_instructions_total_time">Temps total : %1$d min</string>
+    <string name="modal_instructions_order">Ajoutez chaque légume dans l\'ordre indiqué ci-dessus.</string>
+    <string name="modal_instructions_same_time">Tous les légumes seront prêts en même temps.</string>
+    <string name="modal_start_cooking">Démarrer la cuisson</string>
+    <string name="modal_step_season_time">%1$s · %2$s</string>
+    <string name="modal_step_now">Maintenant</string>
+    <string name="modal_step_in_n_min">Dans %1$d min — Ajouter au panier</string>
+
+    <!-- Timer actif (EF-18..EF-24) -->
+    <string name="timer_paused">En pause</string>
+    <string name="timer_steps_title">Étapes de cuisson</string>
+    <string name="timer_resume">Reprendre</string>
+    <string name="timer_pause">Pause</string>
+    <string name="timer_stop">Arrêter</string>
+    <string name="timer_extend_n">+%1$d min</string>
+
+    <string name="step_state_a_venir">À venir</string>
+    <string name="step_state_ajouter_maintenant">AJOUTER MAINTENANT</string>
+    <string name="step_state_ajoutee">Ajoutée ✓</string>
+
+    <!-- Alarme de fin (EF-23) -->
+    <string name="alarm_screen_title">Cuisson terminée !</string>
+    <string name="alarm_ok_ready">OK, c\'est prêt</string>
+    <string name="alarm_extend_2min">Prolonger +2 min</string>
+
+    <!-- Conseils (EF-25) -->
+    <string-array name="conseils_items">
+        <item>Maintenez une température de 100 °C avec une ébullition constante pour une cuisson vapeur régulière.</item>
+        <item>Parfumez l\'eau de cuisson avec des aromates — thym, laurier, romarin — pour infuser vos légumes en douceur.</item>
+        <item>Coupez vos légumes en morceaux de taille uniforme pour une cuisson homogène.</item>
+        <item>Vérifiez la cuisson à la fourchette : elle doit s\'enfoncer facilement sans effort.</item>
+        <item>La cuisson vapeur préserve environ 80 % des vitamines, contre seulement 40 % pour une cuisson à l\'eau bouillante.</item>
+        <item>Servez immédiatement, avec un filet d\'huile d\'olive et une pincée de sel de mer.</item>
+    </string-array>
+</resources>
