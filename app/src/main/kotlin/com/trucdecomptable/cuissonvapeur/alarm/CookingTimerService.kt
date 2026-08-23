@@ -9,7 +9,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
-import androidx.core.content.pm.ServiceInfoCompat
+import androidx.core.app.ServiceInfoCompat
 import com.trucdecomptable.cuissonvapeur.CuissonVapeurApp
 import com.trucdecomptable.cuissonvapeur.MainActivity
 import com.trucdecomptable.cuissonvapeur.R

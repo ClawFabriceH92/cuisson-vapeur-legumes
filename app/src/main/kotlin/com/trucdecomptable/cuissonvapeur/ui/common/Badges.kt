@@ -34,9 +34,19 @@ fun SeasonBadge(seasons: Set<Season>, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun seasonLabel(seasons: Set<Season>): String = when {
-    seasons == ALL_YEAR -> stringResource(R.string.season_all_year)
-    else -> seasons.sortedBy { it.ordinal }.joinToString("/") { seasonName(it) }
+fun seasonLabel(seasons: Set<Season>): String {
+    if (seasons == ALL_YEAR) return stringResource(R.string.season_all_year)
+    // Built with an explicit for-loop, not joinToString { }: the transform
+    // lambda's declared type isn't @Composable, so calling seasonName (a
+    // @Composable function) from inside it is rejected by the Compose
+    // compiler even though joinToString itself is inline.
+    val sortedSeasons = seasons.sortedBy { it.ordinal }
+    val builder = StringBuilder()
+    for ((index, season) in sortedSeasons.withIndex()) {
+        if (index > 0) builder.append("/")
+        builder.append(seasonName(season))
+    }
+    return builder.toString()
 }
 
 @Composable
