@@ -174,16 +174,16 @@ Fabrice Heuvrard / le chef de produit si besoin :
 
 ## Limitations connues / non vérifié dans ce sandbox
 
-- **Aucune vérification de build/exécution du module `:app`** : ce sandbox
-  ne dispose d'aucun SDK Android (pas d'`ANDROID_HOME`, pas d'émulateur). Tout
-  le code Kotlin/XML sous `app/src/` a été écrit avec soin (imports et
-  signatures d'API vérifiés par lecture de la documentation AGP ~8.5 /
-  Compose BOM 2024.09 / Hilt ~2.51 / Room ~2.6), mais **n'a pas compilé** ici
-  — à valider dans Android Studio avec un SDK réel avant toute mise en
-  production.
-- **Wrapper Gradle non généré** : `gradlew`/`gradlew.bat` sont absents ;
-  Android Studio les génère automatiquement à l'ouverture du projet, ou
-  lancer `gradle wrapper` une fois dans un environnement réseau complet.
+- **Le sandbox (où ce README a été rédigé) n'a pas de SDK Android** : pas
+  d'`ANDROID_HOME`, pas d'émulateur, et son proxy bloque dl.google.com — le
+  module `app/` n'a donc jamais compilé *ici*. Ce n'est plus un risque depuis
+  le 23/08/2026 : `.github/workflows/build-apk.yml` compile le module `app/`
+  sur un runner GitHub (JDK 17 + Android SDK), le lance sur un émulateur
+  API 34 (smoke test) et ne publie que si l'app démarre réellement. Chaque
+  push sur `main` refait cette vérification avant publication.
+- **Pas d'émulateur dans ce sandbox** : les tests UI instrumentés et le
+  test de non-régression du timer en arrière-plan (NFR §4) nécessitent un
+  device/émulateur et ne tournent qu'en CI (smoke test de lancement).
 - **Icônes/assets placeholders** : l'icône de lancement (adaptive icon) et
   l'icône de notification sont des vector drawables minimalistes maison, pas
   un vrai design system — à remplacer avant livraison (cf. livrable « Kit UI
@@ -198,13 +198,30 @@ Fabrice Heuvrard / le chef de produit si besoin :
   `TYPE_ALARM` / `TYPE_RINGTONE`) plutôt que vers un asset audio dédié —
   aucun fichier son n'a été fourni avec la spec ; des sons réels devront être
   ajoutés en assets `raw/` avant livraison, per D3.
-- **Pas de tests unitaires/instrumentés sur `:app`** : seul `:domain` est
-  couvert par des tests exécutables dans cet environnement. Le plan de test
-  NFR §4 (« tests UI smoke des 5 écrans », « test de non-régression du timer
-  en arrière-plan ») nécessite un device/émulateur et n'a pas pu être
-  exécuté ici.
 - **Taille APK / consommation batterie non mesurées** (NFR §4 : < 15 Mo, <
   2 %/8 h) — nécessitent un build réel + profiling sur device.
+
+## Mise à jour automatique (depuis 23/08/2026)
+
+L'app se met à jour toute seule depuis GitHub Releases (Réglages → Mise à
+jour) :
+
+- **Signature stable** : les builds `release` sont signés avec un keystore
+  dédié (alias `cuisson`), sauvegardé sur la clé USB de Fabrice
+  (`/mnt/hermes_backup/keystores/`) et passé en secrets GitHub
+  (`CUISSON_KEYSTORE_B64`, `CUISSON_KEYSTORE_PASSWORD`, `CUISSON_KEY_PASSWORD`,
+  `CUISSON_KEY_ALIAS`). Les builds `debug` restent non signés : le
+  debug.keystore du runner change à chaque build et casserait l'installation
+  par-dessus (cause historique du « la mise à jour ne se fait pas »).
+- **Release « latest »** : le CI publie `app-v<version>.apk` (signé) sur la
+  release `latest` après le smoke test émulateur.
+- **Côté app** : `ReleaseParser` (pur, testé) lit l'API GitHub Releases,
+  ignore les drafts et les tags non versionnés (`debug-latest`), compare les
+  versions segment par segment et retient la plus haute avec un asset `.apk`.
+  Le téléchargement passe par `DownloadManager`, l'installation par
+  `FileProvider` + l'installeur système ; la permission « installer des
+  applications inconnues » est demandée au premier clic sur Installer.
+- **Version actuelle** : 1.1 (versionCode 2).
 
 ## Annexe A exportée en JSON (livrable §10.6)
 
