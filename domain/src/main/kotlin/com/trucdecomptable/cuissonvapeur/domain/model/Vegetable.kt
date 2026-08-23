@@ -17,6 +17,10 @@ package com.trucdecomptable.cuissonvapeur.domain.model
  * @property kcalPer100g calories per 100g.
  * @property emoji a single emoji representing the vegetable (UI only, not
  *   specified per-vegetable in the spec text — chosen for this port, see README).
+ * @property origin short editorial origin of the vegetable (region/history),
+ *   added on 23/08/2026 at Fabrice's request ("origine du légume").
+ * @property funFacts short cultural/fun facts (added at the same time,
+ *   "informations de culture générale").
  */
 data class Vegetable(
     val id: String,
@@ -28,4 +32,6 @@ data class Vegetable(
     val seasons: Set<Season>,
     val kcalPer100g: Int,
     val emoji: String,
+    val origin: String,
+    val funFacts: List<String>,
 )

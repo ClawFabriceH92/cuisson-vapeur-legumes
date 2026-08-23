@@ -4,9 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +26,8 @@ import com.trucdecomptable.cuissonvapeur.R
 import com.trucdecomptable.cuissonvapeur.ui.common.CategoryBadge
 import com.trucdecomptable.cuissonvapeur.ui.common.SeasonBadge
 
-/** EF-05: the vegetable detail sheet — time, season, calories, benefits, category, icon. */
+/** EF-05: the vegetable detail sheet — time, season, calories, benefits, category, icon,
+ *  plus origin and cultural facts (added 23/08/2026 at Fabrice's request). */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun VegetableDetailScreen(
@@ -45,8 +50,12 @@ fun VegetableDetailScreen(
         },
     ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(text = vegetable.emoji, style = MaterialTheme.typography.displayMedium)
 
@@ -67,6 +76,24 @@ fun VegetableDetailScreen(
             Text(text = stringResource(R.string.vegetable_benefits_title), style = MaterialTheme.typography.titleSmall)
             vegetable.benefits.forEach { benefit ->
                 Text(text = "• $benefit", style = MaterialTheme.typography.bodyMedium)
+            }
+
+            if (vegetable.origin.isNotBlank()) {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                Text(text = stringResource(R.string.vegetable_origin_title), style = MaterialTheme.typography.titleSmall)
+                Text(text = vegetable.origin, style = MaterialTheme.typography.bodyMedium)
+            }
+
+            if (vegetable.funFacts.isNotEmpty()) {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                Text(text = stringResource(R.string.vegetable_funfacts_title), style = MaterialTheme.typography.titleSmall)
+                vegetable.funFacts.forEach { fact ->
+                    Text(
+                        text = "• $fact",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             }
         }
     }

@@ -3,6 +3,15 @@
 // Built by CI (.github/workflows/build-apk.yml) on a GitHub-hosted runner —
 // this sandbox has no Android SDK and its proxy blocks dl.google.com, so it
 // cannot compile this module itself (see root README, "Limitations connues").
+//
+// Since 23/08/2026: release builds are signed with a dedicated, stable
+// keystore (secrets CUISSON_KEYSTORE_B64 / CUISSON_KEYSTORE_PASSWORD /
+// CUISSON_KEY_PASSWORD / CUISSON_KEY_ALIAS on GitHub) so that in-app
+// auto-update can install a newer APK over an older one. Debug builds stay
+// unsigned (their per-run debug.keystore would break signature continuity).
+import java.io.File
+import java.util.Base64
+
 plugins {
     id("com.android.application") version "8.5.2"
     id("org.jetbrains.kotlin.android") version "2.0.21"
@@ -13,6 +22,18 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.51.1"
 }
 
+// Reads the release keystore either from the CI secrets (CUISSON_KEYSTORE_B64
+// in env) or from the local backup file ($HOME/.secrets/cuisson-release.keystore).
+fun releaseKeystore(): File? {
+    System.getenv("CUISSON_KEYSTORE_B64")?.let { b64 ->
+        val tmp = File(System.getenv("RUNNER_TEMP") ?: "/tmp", "cuisson-release.keystore")
+        tmp.writeBytes(Base64.getDecoder().decode(b64))
+        return tmp
+    }
+    val local = File(System.getProperty("user.home"), ".secrets/cuisson-release.keystore")
+    return if (local.exists()) local else null
+}
+
 android {
     namespace = "com.trucdecomptable.cuissonvapeur"
     compileSdk = 35
@@ -21,15 +42,32 @@ android {
         applicationId = "com.trucdecomptable.cuissonvapeur"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            val ks = releaseKeystore()
+            if (ks != null) {
+                storeFile = ks
+                storePassword = System.getenv("CUISSON_KEYSTORE_PASSWORD")
+                    ?: "CHANGE_ME"
+                keyAlias = System.getenv("CUISSON_KEY_ALIAS")
+                    ?: "cuisson"
+                keyPassword = System.getenv("CUISSON_KEY_PASSWORD")
+                    ?: System.getenv("CUISSON_KEYSTORE_PASSWORD")
+                    ?: "CHANGE_ME"
+            }
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -117,6 +155,7 @@ dependencies {
     // --- Tests ---
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation("org.json:json:20231013") // UpdateChecker parse tests (org.json mocked otherwise)
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")

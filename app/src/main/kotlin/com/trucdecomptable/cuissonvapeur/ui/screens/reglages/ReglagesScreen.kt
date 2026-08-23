@@ -1,5 +1,9 @@
 package com.trucdecomptable.cuissonvapeur.ui.screens.reglages
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,14 +38,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.trucdecomptable.cuissonvapeur.R
 import com.trucdecomptable.cuissonvapeur.data.local.entity.AlarmSound
 import com.trucdecomptable.cuissonvapeur.data.local.entity.ThemeMode
+import com.trucdecomptable.cuissonvapeur.update.UpdateUiState
+import com.trucdecomptable.cuissonvapeur.update.UpdateViewModel
 
-/** EF-26..EF-29: alarm sound/volume/vibration/duration, theme, language, data reset. */
+/** EF-26..EF-29: alarm sound/volume/vibration/duration, theme, language, data reset + update check. */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun ReglagesScreen(onBack: () -> Unit, viewModel: ReglagesViewModel = hiltViewModel()) {
@@ -116,6 +123,10 @@ fun ReglagesScreen(onBack: () -> Unit, viewModel: ReglagesViewModel = hiltViewMo
             OutlinedButton(onClick = { showResetConfirm = true }, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.reglages_reset_data))
             }
+
+            HorizontalDivider()
+            SectionTitle(stringResource(R.string.update_section_title))
+            UpdateSection(viewModel = hiltViewModel())
         }
     }
 
@@ -134,6 +145,60 @@ fun ReglagesScreen(onBack: () -> Unit, viewModel: ReglagesViewModel = hiltViewMo
                 TextButton(onClick = { showResetConfirm = false }) { Text(stringResource(R.string.action_annuler)) }
             },
         )
+    }
+}
+
+/** In-app auto-update section (23/08/2026): status line + check/install buttons. */
+@Composable
+private fun UpdateSection(viewModel: UpdateViewModel = hiltViewModel()) {
+    val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        when (val s = state) {
+            UpdateUiState.Idle,
+            UpdateUiState.Checking,
+            -> Text(stringResource(R.string.update_checking), style = MaterialTheme.typography.bodyMedium)
+
+            UpdateUiState.UpToDate ->
+                Text(stringResource(R.string.update_up_to_date), style = MaterialTheme.typography.bodyMedium)
+
+            is UpdateUiState.Available -> {
+                Text(
+                    text = stringResource(R.string.update_available, s.info.versionName),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                OutlinedButton(
+                    onClick = {
+                        if (context.packageManager.canRequestPackageInstalls()) {
+                            viewModel.download(s.info)
+                        } else {
+                            val intent = Intent(
+                                Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                                Uri.parse("package:${context.packageName}"),
+                            )
+                            context.startActivity(intent)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.update_install)) }
+            }
+
+            UpdateUiState.Downloading ->
+                Text(stringResource(R.string.update_downloading), style = MaterialTheme.typography.bodyMedium)
+
+            is UpdateUiState.Error ->
+                Text(
+                    text = stringResource(R.string.update_error, s.message),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                )
+        }
+
+        OutlinedButton(onClick = { viewModel.checkForUpdate() }, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.update_check))
+        }
     }
 }
 

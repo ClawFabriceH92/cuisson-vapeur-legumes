@@ -8,6 +8,13 @@ name: Build APK
 # the first green build here compiled perfectly and still crashed on startup,
 # so "it compiles" is not evidence the app works. The release step runs only
 # after that smoke test passes.
+#
+# Since 23/08/2026: a SIGNED release APK is also built (secrets
+# CUISSON_KEYSTORE_B64 / CUISSON_KEYSTORE_PASSWORD / CUISSON_KEY_PASSWORD /
+# CUISSON_KEY_ALIAS) and published to the rolling "latest" release as
+# app-v<version>.apk — the in-app auto-update (Réglages → Mise à jour) reads
+# that release. Debug builds stay unsigned: the per-run debug.keystore of
+# CI would change the signature on every build and break updates.
 
 on:
   workflow_dispatch:
@@ -23,7 +30,7 @@ on:
       - ".github/workflows/build-apk.yml"
 
 permissions:
-  contents: write # needed to publish/update the "debug-latest" release below
+  contents: write # needed to publish/update the "debug-latest" and "latest" releases below
 
 jobs:
   build:
@@ -46,6 +53,9 @@ jobs:
 
       - name: Run domain unit tests (EF-16 / EF-14 logic)
         run: ./gradlew :domain:test --stacktrace
+
+      - name: Run app unit tests (update parser)
+        run: ./gradlew :app:testDebugUnitTest --stacktrace
 
       - name: Build debug APK
         run: ./gradlew :app:assembleDebug --stacktrace
@@ -98,3 +108,36 @@ jobs:
             build — see the root README's "Limitations connues".
           prerelease: true
           files: app/build/outputs/apk/debug/*.apk
+
+      # Signed release build — same keystore on every run, so the in-app
+      # auto-update can install it over the previous release APK.
+      - name: Build signed release APK
+        env:
+          CUISSON_KEYSTORE_B64: ${{ secrets.CUISSON_KEYSTORE_B64 }}
+          CUISSON_KEYSTORE_PASSWORD: ${{ secrets.CUISSON_KEYSTORE_PASSWORD }}
+          CUISSON_KEY_PASSWORD: ${{ secrets.CUISSON_KEY_PASSWORD }}
+          CUISSON_KEY_ALIAS: ${{ secrets.CUISSON_KEY_ALIAS }}
+        run: ./gradlew :app:assembleRelease --stacktrace
+
+      - name: Verify release APK signature
+        run: |
+          $ANDROID_HOME/build-tools/*/apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk | head -3
+
+      # Rolling "latest" release holding the signed APK renamed app-v<version>.apk
+      # (the update parser reads the version from the tag or the asset name).
+      - name: Publish signed release APK to rolling "latest"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts)
+          cp app/build/outputs/apk/release/app-release.apk "app-v${VERSION}.apk"
+          gh release delete latest --yes --repo "${{ github.repository }}" || true
+          for i in 1 2 3 4 5; do
+            if gh release create latest "app-v${VERSION}.apk" --repo "${{ github.repository }}" \
+              --title "Cuisson vapeur — dernière version (v${VERSION})" \
+              --notes "APK signé — mise à jour automatique depuis l'app (Réglages → Mise à jour). Build ${{ github.sha }}."; then
+              echo "Published latest v${VERSION}"
+              break
+            fi
+            sleep 10
+          done

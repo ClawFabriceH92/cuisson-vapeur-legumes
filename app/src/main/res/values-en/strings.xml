@@ -55,6 +55,8 @@
     <string name="vegetable_duration_range">%1$s</string>
     <string name="vegetable_kcal">%1$d kcal / 100 g</string>
     <string name="vegetable_benefits_title">Benefits</string>
+    <string name="vegetable_origin_title">Origin</string>
+    <string name="vegetable_funfacts_title">Did you know?</string>
 
     <string name="cd_back">Back</string>
     <string name="cd_remove_favorite">Remove from favorites</string>
@@ -83,6 +85,16 @@
     <string name="reglages_section_donnees">Data</string>
     <string name="reglages_privacy_note">No data ever leaves your phone: no account, no collection, no DPO required.</string>
     <string name="reglages_reset_data">Reset local data</string>
+
+    <!-- Update (23/08/2026) -->
+    <string name="update_section_title">Update</string>
+    <string name="update_check">Check now</string>
+    <string name="update_install">Install update</string>
+    <string name="update_up_to_date">✅ You have the latest version</string>
+    <string name="update_checking">Checking for updates…</string>
+    <string name="update_available">Version %1$s available</string>
+    <string name="update_downloading">Downloading update…</string>
+    <string name="update_error">⚠️ Error: %1$s</string>
     <string name="reglages_reset_confirm_title">Reset?</string>
     <string name="reglages_reset_confirm_text">This will erase your favorites, cart and settings on this device. This cannot be undone.</string>
     <string name="reglages_reset_confirm_action">Reset</string>

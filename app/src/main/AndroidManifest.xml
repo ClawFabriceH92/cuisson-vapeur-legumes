@@ -27,6 +27,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <!-- Show the full-screen alarm activity over the lock screen (EF-23). -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <!-- Install a downloaded APK over the current one (in-app auto-update, 23/08/2026). -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Download the update APK via DownloadManager (in-app auto-update). -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".CuissonVapeurApp"
@@ -78,6 +82,27 @@
         <receiver
             android:name=".alarm.NotificationActionReceiver"
             android:exported="false" />
+
+        <!-- In-app auto-update: when the DownloadManager finishes the APK
+             download, hand it to the system installer (23/08/2026). -->
+        <receiver
+            android:name=".update.UpdateDownloadReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Exposes the downloaded update APK to the package installer. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <!-- Minimal Android 12+ foreground service showing the persistent cooking notification. -->
         <service

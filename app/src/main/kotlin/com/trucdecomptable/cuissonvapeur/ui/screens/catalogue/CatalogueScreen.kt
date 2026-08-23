@@ -2,8 +2,9 @@ package com.trucdecomptable.cuissonvapeur.ui.screens.catalogue
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,7 +35,7 @@ import com.trucdecomptable.cuissonvapeur.ui.common.SortMode
 import com.trucdecomptable.cuissonvapeur.ui.common.VegetableCard
 
 /** EF-01..EF-05: the 28-vegetable catalog grid, with search/sort/season filter. */
-@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogueScreen(
     onOpenDetail: (String) -> Unit,
@@ -72,9 +73,12 @@ fun CatalogueScreen(
                 ) { Text(stringResource(R.string.catalogue_sort_name)) }
             }
 
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 SeasonQuickFilter.entries.forEach { filter ->
                     FilterChip(

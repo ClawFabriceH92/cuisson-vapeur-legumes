@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FileProvider paths — the downloaded update APK lives in
+     getExternalFilesDir(DOWNLOADS)/app-update.apk (see UpdateDownloadReceiver). -->
+<paths>
+    <external-files-path
+        name="downloads"
+        path="Download/" />
+</paths>

@@ -23,6 +23,8 @@ class CookingPlanCalculatorTest {
         seasons = setOf(Season.ETE),
         kcalPer100g = 1,
         emoji = "🥕",
+        origin = "",
+        funFacts = emptyList(),
     )
 
     // --- Basic / edge cases -------------------------------------------------

@@ -48,6 +48,8 @@
     <string name="vegetable_duration_range">%1$s</string>
     <string name="vegetable_kcal">%1$d kcal / 100 g</string>
     <string name="vegetable_benefits_title">Bienfaits</string>
+    <string name="vegetable_origin_title">Origine</string>
+    <string name="vegetable_funfacts_title">Le saviez-vous ?</string>
 
     <string name="cd_back">Retour</string>
     <string name="cd_remove_favorite">Retirer des favoris</string>
@@ -80,6 +82,16 @@
     <string name="reglages_reset_confirm_text">Cela effacera vos favoris, votre panier et vos réglages sur cet appareil. Cette action est irréversible.</string>
     <string name="reglages_reset_confirm_action">Réinitialiser</string>
     <string name="action_annuler">Annuler</string>
+
+    <!-- Mise à jour (23/08/2026) -->
+    <string name="update_section_title">Mise à jour</string>
+    <string name="update_check">Vérifier maintenant</string>
+    <string name="update_install">Installer la mise à jour</string>
+    <string name="update_up_to_date">✅ Vous avez la dernière version</string>
+    <string name="update_checking">Vérification des mises à jour…</string>
+    <string name="update_available">Version %1$s disponible</string>
+    <string name="update_downloading">Téléchargement de la mise à jour…</string>
+    <string name="update_error">⚠️ Erreur : %1$s</string>
 
     <string name="sound_bip">Bip</string>
     <string name="sound_carillon">Carillon</string>
