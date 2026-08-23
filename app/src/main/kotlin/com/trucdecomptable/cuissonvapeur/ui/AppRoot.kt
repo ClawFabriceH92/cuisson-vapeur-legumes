@@ -98,6 +98,17 @@ fun AppRoot() {
                     onOpenDetail = { vegetableId ->
                         navController.navigate(Destinations.vegetableDetail(vegetableId))
                     },
+                    onOpenCart = {
+                        // Same tab-switch semantics as the bottom bar: back returns
+                        // to the catalog, state preserved.
+                        navController.navigate(Destinations.HOME) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                 )
             }
             composable(

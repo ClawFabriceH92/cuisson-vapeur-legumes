@@ -25,6 +25,7 @@ data class CatalogueUiState(
     val sortMode: SortMode = SortMode.TEMPS_CROISSANT,
     val seasonFilter: SeasonQuickFilter? = null,
     val vegetables: List<VegetableUiModel> = emptyList(),
+    val cartCount: Int = 0,
 )
 
 /** EF-02/EF-03/EF-04: search, sort and season-filter the 28-vegetable catalog. */
@@ -54,7 +55,13 @@ class CatalogueViewModel @Inject constructor(
             .map { veg -> VegetableUiModel(veg, isInCart = veg.id in cartIds, isFavorite = veg.id in favoriteIds) }
             .toList()
 
-        CatalogueUiState(query = q, sortMode = sort, seasonFilter = season, vegetables = filtered)
+        CatalogueUiState(
+            query = q,
+            sortMode = sort,
+            seasonFilter = season,
+            vegetables = filtered,
+            cartCount = cart.size,
+        )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CatalogueUiState())
 
     fun onQueryChange(newQuery: String) {
