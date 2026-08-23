@@ -18,6 +18,9 @@ on:
       - "gradle/**"
       - ".github/workflows/build-apk.yml"
 
+permissions:
+  contents: write # needed to publish/update the "debug-latest" release below
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,9 +46,25 @@ jobs:
       - name: Build debug APK
         run: ./gradlew :app:assembleDebug --stacktrace
 
-      - name: Upload debug APK
+      - name: Upload debug APK (build artifact — requires GitHub login to fetch)
         uses: actions/upload-artifact@v4
         with:
           name: cuisson-vapeur-legumes-debug
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+
+      # Actions artifacts are always zip-wrapped and gated behind a GitHub
+      # login, even on a public repo. A release asset is a plain, permanent,
+      # directly-downloadable URL with no auth needed — publish/overwrite a
+      # rolling "debug-latest" release with the freshly built APK attached.
+      - name: Publish debug APK to the rolling "debug-latest" release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: debug-latest
+          name: "Debug build (rolling, latest main)"
+          body: |
+            Automatically rebuilt from `main` @ ${{ github.sha }} by
+            `.github/workflows/build-apk.yml`. Unsigned debug build — see
+            root README's "Limitations connues" before relying on it.
+          prerelease: true
+          files: app/build/outputs/apk/debug/*.apk
