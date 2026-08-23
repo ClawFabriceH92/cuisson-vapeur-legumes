@@ -1,0 +1,51 @@
+name: Build APK
+
+# Builds app/ on a GitHub-hosted runner, which has full internet access and
+# an Android SDK — unlike the sandbox this project was scaffolded in, which
+# has neither (see README.md, "Limitations connues"). This is the first
+# real compile of the :app module; expect follow-up fixes if it fails.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "domain/**"
+      - "build.gradle.kts"
+      - "settings.gradle.kts"
+      - "gradle.properties"
+      - "gradle/**"
+      - ".github/workflows/build-apk.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run domain unit tests (EF-16 / EF-14 logic)
+        run: ./gradlew :domain:test --stacktrace
+
+      - name: Build debug APK
+        run: ./gradlew :app:assembleDebug --stacktrace
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: cuisson-vapeur-legumes-debug
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
