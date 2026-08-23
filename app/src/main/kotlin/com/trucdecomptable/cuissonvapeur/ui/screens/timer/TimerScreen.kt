@@ -26,7 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextAutoSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.trucdecomptable.cuissonvapeur.R
 import com.trucdecomptable.cuissonvapeur.ui.theme.GoalReachedGreen
@@ -145,9 +147,20 @@ private fun CountdownRing(remainingSeconds: Int, progressFraction: Float) {
         )
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             // NFR: décompte ≥ 72dp — displayLarge is set to 72sp in ui/theme/Type.kt.
+            // The 150dp ring is narrower than "MM:SS" at 72sp, which wrapped the
+            // text onto two lines ("02:" / "48") — fix 23/08/2026 (v1.12):
+            // auto-size keeps it as large as possible while staying on one line.
             Text(
                 text = String.format("%02d:%02d", minutes, seconds),
                 style = MaterialTheme.typography.displayLarge,
+                maxLines = 1,
+                softWrap = false,
+                autoSize = TextAutoSize.StepBased(
+                    minFontSize = 40.sp,
+                    maxFontSize = 72.sp,
+                    stepGranularity = 2.sp,
+                ),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
             )
             Text(
                 text = "${(progressFraction * 100).toInt()}%",
