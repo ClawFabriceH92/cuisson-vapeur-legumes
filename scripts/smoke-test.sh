@@ -2,9 +2,9 @@
 #
 # Launch-and-verify smoke test, run against a real emulator in CI.
 #
-# Compiling successfully proves nothing about whether the app actually
-# starts — the first published debug build compiled cleanly and still
-# crashed on launch. This script reproduces exactly what a user does
+# Compiling successfully proves nothing about whether the app starts — the
+# first published debug build compiled cleanly, passed every unit test, and
+# still crashed on launch. This script reproduces exactly what a user does
 # (install, tap the icon) and fails the build if the app dies or never
 # reaches the foreground, so a crashing APK can never be published.
 set -euo pipefail
@@ -34,19 +34,23 @@ fail() {
   echo "$1"
   echo ""
   echo "--- Crash / error output from logcat -------------------"
-  # Print the fatal stack trace if there is one, otherwise anything
-  # logged by or about our package, so the failure is diagnosable.
-  if grep -q "FATAL EXCEPTION" logcat.txt; then
-    awk '/FATAL EXCEPTION/{flag=1} flag' logcat.txt | head -80
+  # Every pipeline here is `|| true`-guarded: under `set -o pipefail`, head
+  # closing the pipe early (SIGPIPE) or grep matching nothing would abort
+  # this function before it printed anything useful.
+  if [ -n "${CRASH_BLOCK:-}" ]; then
+    echo "${CRASH_BLOCK}" | head -80 || true
   else
-    grep -iE "${PACKAGE}|AndroidRuntime|ActivityManager" logcat.txt | tail -60
+    grep -iE "${PACKAGE}|AndroidRuntime|ActivityManager" logcat.txt | tail -60 || true
   fi
   echo "========================================================"
   exit 1
 }
 
-if grep -q "FATAL EXCEPTION" logcat.txt; then
-  fail "The app crashed after launch (FATAL EXCEPTION in logcat)."
+# Only our own crashes count: the emulator's stock apps (GMS, dialer, ...)
+# throw their own exceptions during boot and must not fail this test.
+CRASH_BLOCK=$(awk "/FATAL EXCEPTION/{flag=1} flag" logcat.txt || true)
+if echo "${CRASH_BLOCK}" | grep -q "Process: ${PACKAGE}"; then
+  fail "The app crashed after launch (FATAL EXCEPTION in ${PACKAGE})."
 fi
 
 if grep -qE "Force finishing activity ${PACKAGE}|ANR in ${PACKAGE}" logcat.txt; then

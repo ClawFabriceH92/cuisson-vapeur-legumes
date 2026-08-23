@@ -99,8 +99,14 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    implementation("androidx.hilt:hilt-work:1.2.0")
-    ksp("androidx.hilt:hilt-compiler:1.2.0")
+    // Deliberately NOT depending on androidx.hilt:hilt-work (nor its
+    // androidx.hilt:hilt-compiler): this app schedules everything through
+    // AlarmManager (see alarm/AlarmScheduler.kt) and uses no Worker at all.
+    // hilt-work drags in an old androidx.work, whose androidx.startup
+    // auto-initializer ran ForceStopRunnable on every launch and crashed the
+    // process on Android 12+ ("Targeting S+ requires FLAG_IMMUTABLE or
+    // FLAG_MUTABLE"). Do not re-add it without a real WorkManager use case
+    // and a current work-runtime version.
 
     // --- Coroutines ---
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
