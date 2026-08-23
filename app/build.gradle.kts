@@ -75,6 +75,13 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // Classic Material Components XML library — needed only for the
+    // pre-Compose window theme (Theme.Material3.DayNight.NoActionBar in
+    // themes.xml, used for the splash screen / status bar before setContent{}
+    // hands off to Compose). The Compose Material3 artifact above has no XML
+    // styles of its own.
+    implementation("com.google.android.material:material:1.12.0")
+
     implementation("androidx.activity:activity-compose:1.9.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
