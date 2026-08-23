@@ -37,18 +37,27 @@ class CatalogueViewModel @Inject constructor(
     private val cookingSessionRepository: CookingSessionRepository,
 ) : ViewModel() {
 
+    private data class UiFilters(val query: String, val sort: SortMode, val season: SeasonQuickFilter?)
+
     private val query = MutableStateFlow("")
     private val sortMode = MutableStateFlow(SortMode.TEMPS_CROISSANT)
     private val seasonFilter = MutableStateFlow<SeasonQuickFilter?>(null)
 
+    // combine() only has typed overloads up to 5 flows; group the 3 UI
+    // filters first so the main combine stays within the typed overload.
+    private val filters = combine(query, sortMode, seasonFilter) { q, s, f ->
+        UiFilters(q, s, f)
+    }
+
     val uiState: StateFlow<CatalogueUiState> = combine(
-        query,
-        sortMode,
-        seasonFilter,
+        filters,
         vegetableRepository.observeCart(),
         vegetableRepository.observeFavoriteIds(),
         cookingSessionRepository.observeSession(),
-    ) { q, sort, season, cart, favoriteIds, session ->
+    ) { filters, cart, favoriteIds, session ->
+        val q = filters.query
+        val sort = filters.sort
+        val season = filters.season
         val cartIds = cart.map { it.id }.toSet()
 
         val filtered = vegetableRepository.catalog
