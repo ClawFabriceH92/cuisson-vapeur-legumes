@@ -1,14 +1,14 @@
 // Android application module — Compose UI, Room, Hilt, AlarmManager/notifications.
 //
-// NOT buildable/verifiable in this sandbox: there is no Android SDK installed
-// here (see root README, "Limitations connues"). This file — and every
-// Kotlin/XML file under app/src — was written carefully by hand against the
-// documented APIs of AGP ~8.5, Compose BOM ~2024.09, Hilt ~2.51, Room ~2.6,
-// but has only been checked by reading, not by compiling. Open this project
-// in Android Studio (with an installed SDK) to actually build/run it.
+// Built by CI (.github/workflows/build-apk.yml) on a GitHub-hosted runner —
+// this sandbox has no Android SDK and its proxy blocks dl.google.com, so it
+// cannot compile this module itself (see root README, "Limitations connues").
 plugins {
     id("com.android.application") version "8.5.2"
     id("org.jetbrains.kotlin.android") version "2.0.21"
+    // Required since Kotlin 2.0: the Compose compiler is no longer bundled
+    // into AGP's composeOptions{} mechanism, it's its own Gradle plugin.
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
     id("com.google.devtools.ksp") version "2.0.21-1.0.28"
     id("com.google.dagger.hilt.android") version "2.51.1"
 }
