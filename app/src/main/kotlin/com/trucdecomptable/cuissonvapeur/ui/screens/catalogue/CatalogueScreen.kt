@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -155,6 +157,24 @@ fun CatalogueScreen(
                         onToggleCart = { viewModel.onToggleCart(item.vegetable.id, item.isInCart) },
                         onToggleFavorite = { viewModel.onToggleFavorite(item.vegetable.id) },
                         onOpenDetail = { onOpenDetail(item.vegetable.id) },
+                    )
+                }
+            }
+
+            // Fabrice's feedback (23/08/2026): with a non-empty cart, show a
+            // prominent "start cooking" action right here instead of only on
+            // the Home screen — one tap jumps to the cart where Démarrer is.
+            if (state.cartCount > 0) {
+                Button(
+                    onClick = onOpenCart,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .height(64.dp), // NFR: cibles ≥ 64dp
+                ) {
+                    Text(
+                        text = stringResource(R.string.catalogue_start_cooking, state.cartCount),
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
             }

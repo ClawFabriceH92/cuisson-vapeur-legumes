@@ -32,6 +32,7 @@
     <string name="catalogue_search_hint">Rechercher un légume ou un bienfait…</string>
     <string name="catalogue_sort_time">Temps</string>
     <string name="catalogue_sort_name">Nom</string>
+    <string name="catalogue_start_cooking">Démarrer la cuisson — %1$d légume(s)</string>
 
     <string name="season_printemps">Printemps</string>
     <string name="season_ete">Été</string>
@@ -129,6 +130,8 @@
     <string name="timer_pause">Pause</string>
     <string name="timer_stop">Arrêter</string>
     <string name="timer_extend_n">+%1$d min</string>
+    <string name="timer_finished">Cuisson terminée 🎉</string>
+    <string name="timer_finished_hint">Le temps est écoulé. Appuyez sur Arrêter pour clôturer et lancer une nouvelle cuisson.</string>
 
     <string name="step_state_a_venir">À venir</string>
     <string name="step_state_ajouter_maintenant">AJOUTER MAINTENANT</string>

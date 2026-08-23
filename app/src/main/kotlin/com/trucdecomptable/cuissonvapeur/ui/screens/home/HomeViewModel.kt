@@ -41,12 +41,28 @@ class HomeViewModel @Inject constructor(
 
     private val confirmModalPlan = MutableStateFlow<CookingPlan?>(null)
 
+    /**
+     * A session only counts as "active" for the UI while it is genuinely
+     * running (or paused with time left). An expired-but-not-stopped session
+     * (e.g. the app was closed before pressing Arrêter) must NOT hijack the
+     * Home screen into a dead Timer at 00:00 — that made it impossible to
+     * start a new cooking (fix 23/08/2026).
+     */
+    private fun CookingSessionEntity.isLive(): Boolean {
+        if (!isActive) return false
+        return if (isPaused) {
+            remainingMillisWhenPaused > 0
+        } else {
+            endEpochMillis > System.currentTimeMillis()
+        }
+    }
+
     val uiState: StateFlow<HomeUiState> = combine(
         vegetableRepository.observeCart(),
         cookingSessionRepository.observeSession(),
         confirmModalPlan,
     ) { cart, session, modalPlan ->
-        HomeUiState(cart = cart, activeSession = session?.takeIf { it.isActive }, confirmModalPlan = modalPlan)
+        HomeUiState(cart = cart, activeSession = session?.takeIf { it.isLive() }, confirmModalPlan = modalPlan)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeUiState())
 
     fun onRemoveFromCart(vegetableId: String) {

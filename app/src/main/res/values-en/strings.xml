@@ -39,6 +39,7 @@
     <string name="catalogue_search_hint">Search a vegetable or a benefit…</string>
     <string name="catalogue_sort_time">Time</string>
     <string name="catalogue_sort_name">Name</string>
+    <string name="catalogue_start_cooking">Start cooking — %1$d vegetable(s)</string>
 
     <string name="season_printemps">Spring</string>
     <string name="season_ete">Summer</string>
@@ -136,6 +137,8 @@
     <string name="timer_pause">Pause</string>
     <string name="timer_stop">Stop</string>
     <string name="timer_extend_n">+%1$d min</string>
+    <string name="timer_finished">Cooking finished 🎉</string>
+    <string name="timer_finished_hint">Time is up. Press Stop to close this session and start a new one.</string>
 
     <string name="step_state_a_venir">Upcoming</string>
     <string name="step_state_ajouter_maintenant">ADD NOW</string>

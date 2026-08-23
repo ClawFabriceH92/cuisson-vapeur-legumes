@@ -48,12 +48,32 @@ fun TimerScreen(onSessionEnded: () -> Unit, viewModel: TimerViewModel = hiltView
 
     if (!state.isActive) return
 
+    // A session whose countdown has reached zero is finished: show it as
+    // such instead of a frozen 00:00, so the user knows to press Arrêter
+    // and start a new cooking (fix 23/08/2026 — the Home screen no longer
+    // redirects to an expired session either).
+    val isFinished = !state.isPaused && state.remainingSeconds == 0
+
     Scaffold { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CountdownRing(remainingSeconds = state.remainingSeconds, progressFraction = state.progressFraction)
+            if (isFinished) {
+                Text(
+                    text = stringResource(R.string.timer_finished),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 40.dp),
+                )
+                Text(
+                    text = stringResource(R.string.timer_finished_hint),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            } else {
+                CountdownRing(remainingSeconds = state.remainingSeconds, progressFraction = state.progressFraction)
+            }
 
             if (state.isPaused) {
                 Text(
@@ -85,6 +105,7 @@ fun TimerScreen(onSessionEnded: () -> Unit, viewModel: TimerViewModel = hiltView
                 OutlinedButton(
                     onClick = viewModel::onPauseResumeToggle,
                     modifier = Modifier.weight(1f).height(64.dp), // NFR: cibles ≥ 64dp
+                    enabled = !isFinished,
                 ) {
                     Text(stringResource(if (state.isPaused) R.string.timer_resume else R.string.timer_pause))
                 }
