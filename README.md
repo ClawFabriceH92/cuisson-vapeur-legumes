@@ -11,7 +11,9 @@ fallu trancher des points que le cahier des charges laisse ouverts.
 ## Écran « Dates » (v1.13) — jusqu'à quand manger un produit
 
 Hors périmètre du cahier des charges d'origine, ajouté à la demande de Fabrice :
-un sixième onglet **Conserver** qui répond à « jusqu'à quand je peux manger
+un sixième onglet **Dates** (l'onglet s'appelle « Dates » et l'écran s'ouvre sur
+« Conservation » : à six onglets, le mot « Dates » était coupé sur deux
+lignes, défaut vu sur la capture de l'émulateur) qui répond à « jusqu'à quand je peux manger
 ça ? » pour les produits du quotidien (œufs, viandes, poissons, laitiers,
 traiteur, épicerie, surgelés, fruits et légumes).
 

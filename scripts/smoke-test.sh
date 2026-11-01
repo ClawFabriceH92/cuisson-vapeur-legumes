@@ -76,9 +76,9 @@ fi
 echo ""
 echo "==> SMOKE TEST PASSED: ${PACKAGE} launched and is in the foreground."
 
-# ---------------------------------------------------------------- onglet Conserver
+# ---------------------------------------------------------------- onglet Dates
 #
-# Le smoke test ci-dessus ne prouve que l'accueil. L'écran « Conserver »
+# Le smoke test ci-dessus ne prouve que l'accueil. L'écran « Dates »
 # (v1.13) est le seul qui rende des listes longues construites depuis un
 # catalogue Kotlin : on l'ouvre pour de vrai, on vérifie que les deux familles
 # de dates sont à l'écran, et on laisse une capture en artefact.
@@ -121,7 +121,7 @@ tap_label() {
   echo "    tap ${cible} -> $(echo "${choisi}" | awk '{print $2" ("$5" px2) "}')$(echo "${choisi}" | awk '{print $3","$4}')"
 }
 
-# Filet de sécurité : la barre du bas a N onglets de largeur égale ; « Conserver »
+# Filet de sécurité : la barre du bas a N onglets de largeur égale ; « Dates »
 # est le dernier. Utilisé seulement si le dump n'a pas su le désigner.
 tap_dernier_onglet() {
   local taille largeur hauteur densite
@@ -133,7 +133,7 @@ tap_dernier_onglet() {
   adb shell input tap $(( largeur * 11 / 12 )) $(( hauteur - marge ))
 }
 
-echo "==> Ouverture de l'onglet Conserver"
+echo "==> Ouverture de l'onglet Dates"
 if ! tap_label "Dates"; then
   echo "    libellé non trouvé dans le dump, tap calculé sur la barre du bas"
   tap_dernier_onglet
@@ -163,7 +163,7 @@ for attendu in "consommer jusqu" "DDM"; do
     echo ""
     echo "---------------------------------------"
     CRASH_BLOCK=$(grep -A40 "FATAL EXCEPTION" logcat-conservation.txt || true)
-    fail "L'écran Conserver ne montre pas « ${attendu} » : la liste des dates n'est pas rendue."
+    fail "L'écran Dates ne montre pas « ${attendu} » : la liste des dates n'est pas rendue."
   fi
 done
 
@@ -182,7 +182,7 @@ fi
 
 if grep -q "FATAL EXCEPTION" logcat-conservation.txt; then
   CRASH_BLOCK=$(grep -A40 "FATAL EXCEPTION" logcat-conservation.txt || true)
-  fail "Un crash est survenu en ouvrant l'écran Conserver."
+  fail "Un crash est survenu en ouvrant l'écran Dates."
 fi
 
-echo "==> SMOKE TEST COMPLET: accueil OK, écran Conserver rendu, produits DLC listés."
+echo "==> SMOKE TEST COMPLET: accueil OK, écran Dates rendu, produits DLC listés."
