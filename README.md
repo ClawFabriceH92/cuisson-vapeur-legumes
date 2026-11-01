@@ -8,6 +8,41 @@ exigences non fonctionnelles §4, arborescence UX §5, clarifications
 techniques §12) ; ce README documente comment le code s'y conforme et où il a
 fallu trancher des points que le cahier des charges laisse ouverts.
 
+## Écran « Conserver » (v1.13) — jusqu'à quand manger un produit
+
+Hors périmètre du cahier des charges d'origine, ajouté à la demande de Fabrice :
+un sixième onglet **Conserver** qui répond à « jusqu'à quand je peux manger
+ça ? » pour les produits du quotidien (œufs, viandes, poissons, laitiers,
+traiteur, épicerie, surgelés, fruits et légumes).
+
+Le point central est la **séparation des deux familles de dates**, parce que les
+confondre fait soit jeter de la nourriture encore bonne, soit manger un produit
+dangereux :
+
+- **À consommer jusqu'au (DLC)** — date impérative : au-delà, la denrée peut
+  être dangereuse (règlement (UE) n° 1169/2011, art. 24). Affiché en rouge, avec
+  œufs, viandes, volailles, abats, poissons, coquillages, charcuterie, lait
+  frais, crème, yaourts, fromages frais, plats cuisinés et préparations maison
+  à base d'œufs crus ;
+- **À consommer de préférence avant (DDM) et denrées sans date** — affiché en
+  ambre / vert : le dépassement coûte des qualités, pas la santé (conserves,
+  pâtes, riz, farine, café, huiles, lait UHT, surgelés ; puis les denrées
+  dispensées de date par l'annexe X du règlement INCO : fruits et légumes
+  entiers, vin, sel, sucre, vinaigre, pain).
+
+Chaque fiche donne le repère chiffré quand un texte le fixe (œufs : 28 jours
+après le jour de ponte, règlement (CE) n° 589/2008 ; crème : décret n° 80-313),
+les conditions de conservation, ce qui change à l'ouverture, la congélation et
+les signes qui imposent de jeter. Une recherche libre filtre nom, rayon, mention
+et consigne, et l'écran affiche ses **sources** ainsi que le rappel que la date
+imprimée sur l'emballage prime toujours.
+
+Référentiel : `domain/src/main/kotlin/.../domain/conservation/Conservation.kt`
+(pur Kotlin, testé sans SDK) ; écran :
+`app/src/main/kotlin/.../ui/screens/conservation/ConservationScreen.kt`.
+12 tests verrouillent la séparation DLC / autres dates, le repère des œufs, les
+denrées sans date, l'absence de produit fragile classé en DDM et la recherche.
+
 ## Structure du projet
 
 Le repo est un build Gradle **multi-module**, découpé précisément pour que la
@@ -221,7 +256,7 @@ jour) :
   Le téléchargement passe par `DownloadManager`, l'installation par
   `FileProvider` + l'installeur système ; la permission « installer des
   applications inconnues » est demandée au premier clic sur Installer.
-- **Version actuelle** : 1.1 (versionCode 2).
+- **Version actuelle** : 1.13 (versionCode 14) — ajoute l'écran « Conserver ».
 
 ## Annexe A exportée en JSON (livrable §10.6)
 

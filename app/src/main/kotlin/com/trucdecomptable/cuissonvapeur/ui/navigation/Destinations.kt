@@ -8,6 +8,7 @@ object Destinations {
     const val FAVORIS = "favoris"
     const val OBJECTIFS = "objectifs"
     const val CONSEILS = "conseils"
+    const val CONSERVATION = "conservation"
     const val REGLAGES = "reglages"
     const val TIMER = "timer"
 

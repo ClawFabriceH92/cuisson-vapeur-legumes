@@ -26,6 +26,7 @@
     <string name="nav_favoris">Favoris</string>
     <string name="nav_objectifs">Objectifs</string>
     <string name="nav_conseils">Conseils</string>
+    <string name="nav_conservation">Conserver</string>
     <string name="nav_reglages">Réglages</string>
 
     <!-- Catalogue (EF-01..EF-05) -->

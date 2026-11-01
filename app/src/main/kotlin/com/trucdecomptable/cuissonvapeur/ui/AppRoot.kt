@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Kitchen
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.TrackChanges
@@ -28,6 +29,7 @@ import com.trucdecomptable.cuissonvapeur.ui.navigation.Destinations
 import com.trucdecomptable.cuissonvapeur.ui.screens.catalogue.CatalogueScreen
 import com.trucdecomptable.cuissonvapeur.ui.screens.catalogue.VegetableDetailScreen
 import com.trucdecomptable.cuissonvapeur.ui.screens.conseils.ConseilsScreen
+import com.trucdecomptable.cuissonvapeur.ui.screens.conservation.ConservationScreen
 import com.trucdecomptable.cuissonvapeur.ui.screens.favoris.FavorisScreen
 import com.trucdecomptable.cuissonvapeur.ui.screens.home.HomeScreen
 import com.trucdecomptable.cuissonvapeur.ui.screens.objectifs.ObjectifsScreen
@@ -42,6 +44,7 @@ private val bottomTabs = listOf(
     BottomTab(Destinations.FAVORIS, R.string.nav_favoris, Icons.Filled.Favorite),
     BottomTab(Destinations.OBJECTIFS, R.string.nav_objectifs, Icons.Filled.TrackChanges),
     BottomTab(Destinations.CONSEILS, R.string.nav_conseils, Icons.Filled.Lightbulb),
+    BottomTab(Destinations.CONSERVATION, R.string.nav_conservation, Icons.Filled.Kitchen),
 )
 
 /**
@@ -129,6 +132,9 @@ fun AppRoot() {
             }
             composable(Destinations.CONSEILS) {
                 ConseilsScreen(onNavigateToReglages = { navController.navigate(Destinations.REGLAGES) })
+            }
+            composable(Destinations.CONSERVATION) {
+                ConservationScreen(onNavigateToReglages = { navController.navigate(Destinations.REGLAGES) })
             }
             composable(Destinations.REGLAGES) {
                 ReglagesScreen(onBack = { navController.popBackStack() })
