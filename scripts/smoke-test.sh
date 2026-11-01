@@ -75,3 +75,50 @@ fi
 
 echo ""
 echo "==> SMOKE TEST PASSED: ${PACKAGE} launched and is in the foreground."
+
+# ---------------------------------------------------------------- onglet Conserver
+#
+# Le smoke test ci-dessus ne prouve que l'accueil. L'écran « Conserver »
+# (v1.13) est le seul qui rende des listes longues construites depuis un
+# catalogue Kotlin : on l'ouvre pour de vrai, on vérifie que les deux familles
+# de dates sont à l'écran, et on laisse une capture en artefact.
+
+# Touche l'élément dont le texte ou la description contient $1.
+tap_label() {
+  local cible="$1"
+  adb shell uiautomator dump /sdcard/ui.xml > /dev/null 2>&1 || return 1
+  local node
+  node=$(adb shell cat /sdcard/ui.xml | tr '>' '>\n' | grep -i -m1 -E "(text|content-desc)=\"[^\"]*${cible}" || true)
+  [ -n "${node}" ] || return 1
+  local bounds
+  bounds=$(echo "${node}" | grep -o 'bounds="\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]"' | head -1 || true)
+  [ -n "${bounds}" ] || return 1
+  local nums
+  nums=$(echo "${bounds}" | grep -o '[0-9]\+')
+  local x1 y1 x2 y2
+  x1=$(echo "${nums}" | sed -n 1p); y1=$(echo "${nums}" | sed -n 2p)
+  x2=$(echo "${nums}" | sed -n 3p); y2=$(echo "${nums}" | sed -n 4p)
+  echo "    tap ${cible} -> $(( (x1 + x2) / 2 )),$(( (y1 + y2) / 2 ))"
+  adb shell input tap $(( (x1 + x2) / 2 )) $(( (y1 + y2) / 2 ))
+}
+
+echo "==> Ouverture de l'onglet Conserver"
+tap_label "Conserver" || fail "Onglet « Conserver » introuvable dans la barre de navigation."
+sleep 4
+adb logcat -d > logcat-conservation.txt
+
+ECRAN=$(adb shell uiautomator dump /sdcard/ui2.xml > /dev/null 2>&1; adb shell cat /sdcard/ui2.xml || true)
+for attendu in "consommer jusqu" "DDM" "Œufs" "conserves"; do
+  if ! echo "${ECRAN}" | grep -qi "${attendu}"; then
+    CRASH_BLOCK=$(grep -A40 "FATAL EXCEPTION" logcat-conservation.txt || true)
+    fail "L'écran Conserver ne montre pas « ${attendu} » : la liste des dates n'est pas rendue."
+  fi
+done
+
+if grep -q "FATAL EXCEPTION" logcat-conservation.txt; then
+  CRASH_BLOCK=$(grep -A40 "FATAL EXCEPTION" logcat-conservation.txt || true)
+  fail "Un crash est survenu en ouvrant l'écran Conserver."
+fi
+
+adb exec-out screencap -p > screenshot-conservation.png || true
+echo "==> SMOKE TEST COMPLET: accueil OK, écran Conserver rendu (capture en artefact)."
