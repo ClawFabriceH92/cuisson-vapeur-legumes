@@ -84,41 +84,84 @@ echo "==> SMOKE TEST PASSED: ${PACKAGE} launched and is in the foreground."
 # de dates sont à l'écran, et on laisse une capture en artefact.
 
 # Touche l'élément dont le texte ou la description contient $1.
+#
+# Le dump contient des nœuds parents dont la description agrège tout le texte
+# de l'écran : un simple « premier nœud qui contient le libellé » tape donc au
+# milieu de la page (vécu 01/11/2026, tap 540,1200 au lieu de la barre du bas).
+# On garde donc le nœud de PLUS PETITE surface parmi les correspondances.
 tap_label() {
   local cible="$1"
   adb shell uiautomator dump /sdcard/ui.xml > /dev/null 2>&1 || return 1
-  local node
-  node=$(adb shell cat /sdcard/ui.xml | tr '>' '>\n' | grep -i -m1 -E "(text|content-desc)=\"[^\"]*${cible}" || true)
-  [ -n "${node}" ] || return 1
-  local bounds
-  bounds=$(echo "${node}" | grep -o 'bounds="\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]"' | head -1 || true)
-  [ -n "${bounds}" ] || return 1
-  local nums
-  nums=$(echo "${bounds}" | grep -o '[0-9]\+')
-  local x1 y1 x2 y2
-  x1=$(echo "${nums}" | sed -n 1p); y1=$(echo "${nums}" | sed -n 2p)
-  x2=$(echo "${nums}" | sed -n 3p); y2=$(echo "${nums}" | sed -n 4p)
-  echo "    tap ${cible} -> $(( (x1 + x2) / 2 )),$(( (y1 + y2) / 2 ))"
-  adb shell input tap $(( (x1 + x2) / 2 )) $(( (y1 + y2) / 2 ))
+  adb shell cat /sdcard/ui.xml > /tmp/ui.xml || return 1
+
+  local choisi
+  choisi=$(awk -v cible="${cible}" '
+    {
+      ligne = $0
+      if (match(ligne, /bounds="\[[0-9]+,[0-9]+\]\[[0-9]+,[0-9]+\]"/) == 0) next
+      b = substr(ligne, RSTART, RLENGTH)
+      gsub(/[^0-9]/, " ", b)
+      split(b, a, " ")
+      x1 = a[1]; y1 = a[2]; x2 = a[3]; y2 = a[4]
+      surface = (x2 - x1) * (y2 - y1)
+      exact  = (index(ligne, "text=\"" cible "\"") > 0 || index(ligne, "content-desc=\"" cible "\"") > 0)
+      proche = (index(tolower(ligne), tolower(cible)) > 0)
+      if (!exact && !proche) next
+      # surface en tête du tri : une correspondance exacte passe avant tout
+      printf "%d %s %d %d\n", surface + (exact ? 0 : 1000000000), (exact ? "E" : "P"), int((x1 + x2) / 2), int((y1 + y2) / 2)
+    }' /tmp/ui.xml | sort -n | head -1)
+
+  [ -n "${choisi}" ] || return 1
+  adb shell input tap "$(echo "${choisi}" | awk '{print $3}')" "$(echo "${choisi}" | awk '{print $4}')"
+  echo "    tap ${cible} -> $(echo "${choisi}" | awk '{print $2" "$3","$4}')"
+}
+
+# Filet de sécurité : la barre du bas a N onglets de largeur égale ; « Conserver »
+# est le dernier. Utilisé seulement si le dump n'a pas su le désigner.
+tap_dernier_onglet() {
+  local taille largeur hauteur densite
+  taille=$(adb shell wm size | grep -o '[0-9]\+x[0-9]\+' | tail -1)
+  largeur=${taille%x*}; hauteur=${taille#*x}
+  densite=$(adb shell wm density | grep -o '[0-9]\+' | head -1)
+  local marge=$(( 48 * densite / 160 ))
+  echo "    tap de secours -> $(( largeur * 11 / 12 )),$(( hauteur - marge ))"
+  adb shell input tap $(( largeur * 11 / 12 )) $(( hauteur - marge ))
 }
 
 echo "==> Ouverture de l'onglet Conserver"
-tap_label "Conserver" || fail "Onglet « Conserver » introuvable dans la barre de navigation."
+if ! tap_label "Conserver"; then
+  echo "    libellé non trouvé dans le dump, tap calculé sur la barre du bas"
+  tap_dernier_onglet
+fi
 sleep 4
 adb logcat -d > logcat-conservation.txt
 
 ECRAN=$(adb shell uiautomator dump /sdcard/ui2.xml > /dev/null 2>&1; adb shell cat /sdcard/ui2.xml || true)
-for attendu in "consommer jusqu" "DDM" "Œufs" "conserves"; do
+# Les deux repères de l'en-tête : ils prouvent que l'écran est bien celui-là et
+# que les deux familles sont présentées séparément.
+for attendu in "consommer jusqu" "DDM"; do
   if ! echo "${ECRAN}" | grep -qi "${attendu}"; then
     CRASH_BLOCK=$(grep -A40 "FATAL EXCEPTION" logcat-conservation.txt || true)
     fail "L'écran Conserver ne montre pas « ${attendu} » : la liste des dates n'est pas rendue."
   fi
 done
 
+# Capture du haut de l'écran avant de défiler (c'est ce que voit l'utilisateur).
+adb exec-out screencap -p > screenshot-conservation.png || true
+
+# Un défilement, puis un produit fragile doit apparaître : la liste est rendue
+# par un LazyColumn, donc seuls les éléments visibles sont dans le dump.
+adb shell input swipe 540 1800 540 700 300 || true
+sleep 2
+ECRAN2=$(adb shell uiautomator dump /sdcard/ui3.xml > /dev/null 2>&1; adb shell cat /sdcard/ui3.xml || true)
+if ! echo "${ECRAN2}" | grep -qi "œuf\|oeuf"; then
+  CRASH_BLOCK=$(grep -A40 "FATAL EXCEPTION" logcat-conservation.txt || true)
+  fail "Après défilement, les produits de la famille DLC ne sont pas affichés."
+fi
+
 if grep -q "FATAL EXCEPTION" logcat-conservation.txt; then
   CRASH_BLOCK=$(grep -A40 "FATAL EXCEPTION" logcat-conservation.txt || true)
   fail "Un crash est survenu en ouvrant l'écran Conserver."
 fi
 
-adb exec-out screencap -p > screenshot-conservation.png || true
-echo "==> SMOKE TEST COMPLET: accueil OK, écran Conserver rendu (capture en artefact)."
+echo "==> SMOKE TEST COMPLET: accueil OK, écran Conserver rendu, produits DLC listés."

@@ -27,6 +27,7 @@ on:
       - "settings.gradle.kts"
       - "gradle.properties"
       - "gradle/**"
+      - "scripts/**"
       - ".github/workflows/build-apk.yml"
 
 permissions:
