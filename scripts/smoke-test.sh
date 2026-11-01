@@ -92,7 +92,10 @@ echo "==> SMOKE TEST PASSED: ${PACKAGE} launched and is in the foreground."
 tap_label() {
   local cible="$1"
   adb shell uiautomator dump /sdcard/ui.xml > /dev/null 2>&1 || return 1
-  adb shell cat /sdcard/ui.xml > /tmp/ui.xml || return 1
+  # Un nœud par ligne : le dump est un XML sur UNE seule ligne, et sans ce
+  # découpage l'expression régulière trouve les bounds du nœud racine (tout
+  # l'écran) dès que le libellé cherché apparaît n'importe où dans le fichier.
+  adb shell cat /sdcard/ui.xml | tr '>' '>\n' > /tmp/ui.xml || return 1
 
   local choisi
   choisi=$(awk -v cible="${cible}" '
@@ -108,12 +111,12 @@ tap_label() {
       proche = (index(tolower(ligne), tolower(cible)) > 0)
       if (!exact && !proche) next
       # surface en tête du tri : une correspondance exacte passe avant tout
-      printf "%d %s %d %d\n", surface + (exact ? 0 : 1000000000), (exact ? "E" : "P"), int((x1 + x2) / 2), int((y1 + y2) / 2)
+      printf "%d %s %d %d %d\n", surface + (exact ? 0 : 1000000000), (exact ? "E" : "P"), int((x1 + x2) / 2), int((y1 + y2) / 2), surface
     }' /tmp/ui.xml | sort -n | head -1)
 
   [ -n "${choisi}" ] || return 1
   adb shell input tap "$(echo "${choisi}" | awk '{print $3}')" "$(echo "${choisi}" | awk '{print $4}')"
-  echo "    tap ${cible} -> $(echo "${choisi}" | awk '{print $2" "$3","$4}')"
+  echo "    tap ${cible} -> $(echo "${choisi}" | awk '{print $2" ("$5" px2) "}')$(echo "${choisi}" | awk '{print $3","$4}')"
 }
 
 # Filet de sécurité : la barre du bas a N onglets de largeur égale ; « Conserver »
@@ -134,13 +137,29 @@ if ! tap_label "Conserver"; then
   tap_dernier_onglet
 fi
 sleep 4
+
+lire_ecran() {
+  adb shell uiautomator dump /sdcard/ui.xml > /dev/null 2>&1 || true
+  adb shell cat /sdcard/ui.xml 2>/dev/null || true
+}
+
+ECRAN=$(lire_ecran)
+if ! echo "${ECRAN}" | grep -qi "consommer jusqu"; then
+  echo "    l'onglet ne s'est pas ouvert au premier essai, seconde tentative par coordonnées"
+  tap_dernier_onglet
+  sleep 4
+  ECRAN=$(lire_ecran)
+fi
 adb logcat -d > logcat-conservation.txt
 
-ECRAN=$(adb shell uiautomator dump /sdcard/ui2.xml > /dev/null 2>&1; adb shell cat /sdcard/ui2.xml || true)
 # Les deux repères de l'en-tête : ils prouvent que l'écran est bien celui-là et
 # que les deux familles sont présentées séparément.
 for attendu in "consommer jusqu" "DDM"; do
   if ! echo "${ECRAN}" | grep -qi "${attendu}"; then
+    echo "--- extrait du dump, pour diagnostic ---"
+    echo "${ECRAN}" | head -c 3000 || true
+    echo ""
+    echo "---------------------------------------"
     CRASH_BLOCK=$(grep -A40 "FATAL EXCEPTION" logcat-conservation.txt || true)
     fail "L'écran Conserver ne montre pas « ${attendu} » : la liste des dates n'est pas rendue."
   fi
