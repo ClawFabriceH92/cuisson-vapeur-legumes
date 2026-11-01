@@ -33,6 +33,7 @@
     <string name="nav_favoris">Favorites</string>
     <string name="nav_objectifs">Goals</string>
     <string name="nav_conseils">Tips</string>
+    <string name="nav_conservation">Dates</string>
     <string name="nav_reglages">Settings</string>
 
     <!-- Catalogue (EF-01..EF-05) -->

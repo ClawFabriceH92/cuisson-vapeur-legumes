@@ -134,7 +134,7 @@ tap_dernier_onglet() {
 }
 
 echo "==> Ouverture de l'onglet Conserver"
-if ! tap_label "Conserver"; then
+if ! tap_label "Dates"; then
   echo "    libellé non trouvé dans le dump, tap calculé sur la barre du bas"
   tap_dernier_onglet
 fi
