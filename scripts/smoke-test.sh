@@ -95,7 +95,9 @@ tap_label() {
   # Un nœud par ligne : le dump est un XML sur UNE seule ligne, et sans ce
   # découpage l'expression régulière trouve les bounds du nœud racine (tout
   # l'écran) dès que le libellé cherché apparaît n'importe où dans le fichier.
-  adb shell cat /sdcard/ui.xml | tr '>' '>\n' > /tmp/ui.xml || return 1
+  # sed et non tr : « tr '>' '>\n' » n'insère rien, tr tronque SET2 à la
+  # longueur de SET1 (un seul caractère) — piège vérifié.
+  adb shell cat /sdcard/ui.xml | sed 's/></>\n</g' > /tmp/ui.xml || return 1
 
   local choisi
   choisi=$(awk -v cible="${cible}" '
