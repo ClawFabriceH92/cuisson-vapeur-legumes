@@ -8,7 +8,7 @@ exigences non fonctionnelles §4, arborescence UX §5, clarifications
 techniques §12) ; ce README documente comment le code s'y conforme et où il a
 fallu trancher des points que le cahier des charges laisse ouverts.
 
-## Écran « Conserver » (v1.13) — jusqu'à quand manger un produit
+## Écran « Dates » (v1.13) — jusqu'à quand manger un produit
 
 Hors périmètre du cahier des charges d'origine, ajouté à la demande de Fabrice :
 un sixième onglet **Conserver** qui répond à « jusqu'à quand je peux manger
@@ -256,7 +256,7 @@ jour) :
   Le téléchargement passe par `DownloadManager`, l'installation par
   `FileProvider` + l'installeur système ; la permission « installer des
   applications inconnues » est demandée au premier clic sur Installer.
-- **Version actuelle** : 1.13 (versionCode 14) — ajoute l'écran « Conserver ».
+- **Version actuelle** : 1.13.1 (versionCode 15) — ajoute l'écran « Dates » (conservation).
 
 ## Annexe A exportée en JSON (livrable §10.6)
 
